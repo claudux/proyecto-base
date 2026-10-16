@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+# prepara y valida los datos de la petición, no hace llamadas de red.
 def armar_peticion(pregunta):
     if not isinstance(pregunta, str) or not pregunta.strip():
         raise ValueError("La pregunta no puede estar vacía")
@@ -21,6 +22,7 @@ def armar_peticion(pregunta):
     return url, body, api_key
 
 
+# envía la petición y convierte fallos de transporte o HTTP en errores claros.
 def enviar_peticion(url, body, api_key):
     try:
         respuesta = requests.post(
@@ -49,6 +51,7 @@ def enviar_peticion(url, body, api_key):
         ) from error
 
 
+# extrae el texto del JSON, no conoce la clave ni cómo se hizo la petición.
 def extraer_texto(datos):
     try:
         texto = datos["candidates"][0]["content"]["parts"][0]["text"]
@@ -62,6 +65,7 @@ def extraer_texto(datos):
     return texto
 
 
+# coordina las tres responsabilidades anteriores sin repetir su lógica.
 def obtener_dato_de_prueba(pregunta):
     url, body, api_key = armar_peticion(pregunta)
     datos = enviar_peticion(url, body, api_key)
