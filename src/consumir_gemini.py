@@ -1,4 +1,5 @@
 import os
+import time
 from math import isfinite
 
 import requests
@@ -152,29 +153,80 @@ def obtener_dato_de_prueba(pregunta):
 
 # Función principal para ejecutar el script de prueba
 if __name__ == "__main__":
-    pregunta = "Describe como estará el clima en la region de los rios durante esta semana."
 
-    # Se hace una sola petición a Gemini y se procesan los resultados.
-    url, body, api_key = armar_peticion(pregunta)
-    datos = enviar_peticion(url, body, api_key)
-
-    texto = extraer_texto(datos)
-    tokens = extraer_uso_de_tokens(datos)
-
-    costo = calcular_costo(
-        datos,
-        PRECIO_ENTRADA_POR_TOKEN,
-        PRECIO_SALIDA_POR_TOKEN,
+    pregunta = (
+        "Calcula el doble de (4 * 5). "
+        "Responde únicamente con el resultado numérico."
     )
 
-    # Se imprimen los resultados de manera clara y legible.
-    print("\nRespuesta:")
-    print(texto)
+    modelos = {
+        "gemini-3.5-flash-lite": {
+            "entrada": 0.30 / 1_000_000,
+            "salida": 2.50 / 1_000_000,
+        },
+        "gemini-3.6-flash": {
+            "entrada": 0.75 / 1_000_000,
+            "salida": 3.75 / 1_000_000,
+        },
+    }
 
-    print("\nUso de tokens:")
-    print("Tokens de entrada:", tokens["entrada"])
-    print("Tokens de salida:", tokens["salida"])
-    print("Tokens de razonamiento:", tokens["razonamiento"])
-    print("Total:", tokens["total"])
+    repeticiones = 4
 
-    print(f"\nCosto real de esta petición: USD {costo:.8f}")
+    for modelo, precios in modelos.items():
+
+        # Cambia el modelo solo durante la ejecución
+        os.environ["GEMINI_MODEL"] = modelo
+
+        latencias = []
+        costos = []
+        correctas = 0
+
+        print(f"\n{'=' * 45}")
+        print(f"MODELO: {modelo}")
+        print(f"{'=' * 45}")
+
+        for i in range(repeticiones):
+
+            try:
+                url, body, api_key = armar_peticion(pregunta)
+
+                inicio = time.perf_counter()
+                datos = enviar_peticion(url, body, api_key)
+                latencia = time.perf_counter() - inicio
+
+                texto = extraer_texto(datos).strip()
+                tokens = extraer_uso_de_tokens(datos)
+
+                costo = calcular_costo(
+                    datos,
+                    precios["entrada"],
+                    precios["salida"],
+                )
+
+                latencias.append(latencia)
+                costos.append(costo)
+
+                if texto == "40":
+                    correctas += 1
+
+                print(f"\nIntento {i + 1}")
+                print(f"Respuesta: {texto}")
+                print(f"Latencia: {latencia:.2f} segundos")
+                print(f"Tokens totales: {tokens['total']}")
+                print(f"Costo estimado: USD {costo:.8f}")
+
+            except (RuntimeError, ValueError) as error:
+                print(f"\nIntento {i + 1}: ERROR - {error}")
+
+        if latencias:
+            promedio = sum(latencias) / len(latencias)
+            costo_total = sum(costos)
+
+            print("\n--- RESUMEN ---")
+            print(f"Modelo: {modelo}")
+            print(f"Pruebas exitosas: {len(latencias)}")
+            print(f"Respuestas correctas: {correctas}")
+            print(f"Latencia promedio: {promedio:.2f} segundos")
+            print(f"Costo total estimado: USD {costo_total:.8f}")
+        else:
+            print("\nNo hubo pruebas exitosas.")
