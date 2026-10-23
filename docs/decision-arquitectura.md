@@ -23,11 +23,12 @@ La elección corresponde al alcance actual del prototipo y podrá revisarse si l
 
 El diagrama documenta el flujo principal:
 
-1. `armar_peticion(pregunta)` valida la entrada, obtiene `GEMINI_API_KEY` y `GEMINI_MODEL` desde el entorno (cargados mediante `.env`) y genera `url`, `body` y `api_key`.
+1. `armar_peticion(pregunta, system_instruction=None, response_schema=None)` valida la entrada, obtiene `GEMINI_API_KEY` y `GEMINI_MODEL` desde el entorno (cargados mediante `.env`) y genera `url`, `body` y `api_key`. Si recibe una instrucción o un esquema, los añade a `systemInstruction` y `generationConfig` respectivamente.
 2. `enviar_peticion(url, body, api_key)` usa la credencial en la cabecera `x-goog-api-key`, envía la solicitud HTTP y devuelve el JSON procesado.
 3. `extraer_texto(datos)` recupera el texto de `candidates[0].content.parts[0].text`.
 4. `extraer_uso_de_tokens(datos)` lee `usageMetadata` y devuelve los conteos de entrada, salida, razonamiento y total.
 5. `calcular_costo(datos, precio_entrada, precio_salida)` obtiene los conteos de tokens nuevamente y estima el costo de entrada más salida y razonamiento.
+6. `parsear_respuesta_json(texto, esquema)` interpreta el texto y delega a `validar_estructura` la comprobación de claves, tipos y valores permitidos. El banco y su prueba de consistencia viven en `prompts/`.
 
 Los errores de red, HTTP, JSON y datos inválidos se transforman en excepciones comprensibles mediante validaciones y bloques `try/except`. La credencial **no debe incluirse en el repositorio**: el archivo `.env` debe permanecer ignorado por Git.
 
@@ -96,3 +97,15 @@ Por estos motivos, su ventaja de latencia no compensa, por ahora, el aumento de 
 Antes de considerar esta decisión definitiva para producción, se recomienda repetir la evaluación con más ejecuciones, alternar el orden de los modelos, registrar separadamente tokens de entrada, salida y razonamiento, y comprobar la calidad mediante varias preguntas representativas. También conviene medir mediana y percentiles de latencia, así como el tratamiento de errores HTTP 429/503.
 
 **Resultado del ADR:** `gemini-3.5-flash-lite` queda documentado como modelo predeterminado para el prototipo, con reevaluación pendiente al aumentar el alcance de la aplicación.
+
+## 7. Aplicación de la decisión en la Unidad U1.5
+
+El código y `.env.example` usan `gemini-3.5-flash-lite` como predeterminado. El
+archivo `.env` local también se configuró con ese modelo para la ejecución de la
+prueba. `GEMINI_MODEL` permite cambiarlo explícitamente; en ese caso deben
+revisarse las tarifas usadas por el ejemplo de estimación de costo.
+
+La separación de responsabilidades es deliberada: el banco describe las tareas,
+`armar_peticion` construye la solicitud, `enviar_peticion` se ocupa de HTTP y
+`parsear_respuesta_json` valida los datos recibidos. Así se pueden agregar
+prompts sin editar el cliente HTTP ni duplicar lógica de validación.

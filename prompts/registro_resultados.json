@@ -1,0 +1,25 @@
+{
+  "fecha_utc": "2026-10-23T23:49:51.076412+00:00",
+  "modelo": "gemini-3.5-flash-lite",
+  "repeticiones_por_prompt": 3,
+  "resultados": {
+    "explicar_fenomeno": {
+      "exitos": 3,
+      "fallos": 0,
+      "intentos": 3,
+      "detalle_fallos": []
+    },
+    "extraer_boletin": {
+      "exitos": 3,
+      "fallos": 0,
+      "intentos": 3,
+      "detalle_fallos": []
+    },
+    "evaluar_afirmacion": {
+      "exitos": 3,
+      "fallos": 0,
+      "intentos": 3,
+      "detalle_fallos": []
+    }
+  }
+}

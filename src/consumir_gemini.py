@@ -1,4 +1,6 @@
+import json
 import os
+import re
 import time
 from math import isfinite
 
@@ -7,19 +9,24 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-# Consideraciones
-# Precios estándar de Gemini 3.6 Flash en USD por token.
-# Corresponden a USD 0.75 / 1M tokens de entrada y USD 3.75 / 1M de salida.
-# Si se cambia el modelo o el proveedor, estos precios deben actualizarse.
-PRECIO_ENTRADA_POR_TOKEN = 0.75 / 1_000_000
-PRECIO_SALIDA_POR_TOKEN = 3.75 / 1_000_000
+# Modelo y precios elegidos en docs/decision-arquitectura.md.
+# Si GEMINI_MODEL cambia, también deben revisarse estos precios.
+MODELO_PREDETERMINADO = "gemini-3.5-flash-lite"
+PRECIO_ENTRADA_POR_TOKEN = 0.30 / 1_000_000
+PRECIO_SALIDA_POR_TOKEN = 2.50 / 1_000_000
 
 
 # Prepara y valida los datos de la petición, sin hacer llamadas de red.
-def armar_peticion(pregunta):
+def armar_peticion(pregunta, system_instruction=None, response_schema=None):
     # Valida que la pregunta no esté vacía y que la clave de API esté configurada.
     if not isinstance(pregunta, str) or not pregunta.strip():
         raise ValueError("La pregunta no puede estar vacía.")
+    if system_instruction is not None and (
+        not isinstance(system_instruction, str) or not system_instruction.strip()
+    ):
+        raise ValueError("La instrucción de sistema no puede estar vacía.")
+    if response_schema is not None and not isinstance(response_schema, dict):
+        raise ValueError("El esquema de respuesta debe ser un diccionario.")
 
     api_key = os.getenv("GEMINI_API_KEY")
     # Valida que la clave de API esté configurada en el archivo .env.
@@ -29,7 +36,7 @@ def armar_peticion(pregunta):
     if not isinstance(api_key, str) or not api_key.strip():
         raise ValueError("La clave de API no tiene un formato válido.")
 
-    modelo = os.getenv("GEMINI_MODEL") or "gemini-3.6-flash"
+    modelo = os.getenv("GEMINI_MODEL") or MODELO_PREDETERMINADO
     url = (
         f"https://generativelanguage.googleapis.com/"
         f"v1beta/models/{modelo}:generateContent"
@@ -45,6 +52,13 @@ def armar_peticion(pregunta):
             }
         ]
     }
+    if system_instruction is not None:
+        body["systemInstruction"] = {"parts": [{"text": system_instruction}]}
+    if response_schema is not None:
+        body["generationConfig"] = {
+            "responseMimeType": "application/json",
+            "responseSchema": response_schema,
+        }
 
     return url, body, api_key
 
@@ -92,6 +106,52 @@ def extraer_texto(datos):
         raise RuntimeError("La respuesta no contiene texto generado.")
 
     return texto
+
+
+def validar_estructura(valor, esquema, ruta="respuesta"):
+    """Valida los datos recibidos; el esquema de la API no sustituye esta revisión."""
+    tipo = esquema["type"]
+    if tipo == "OBJECT":
+        if not isinstance(valor, dict):
+            raise ValueError(f"{ruta} debe ser un objeto.")
+        propiedades = esquema["properties"]
+        requeridas = set(esquema.get("required", []))
+        if not requeridas.issubset(valor) or set(valor) - set(propiedades):
+            raise ValueError(f"{ruta} tiene claves faltantes o inesperadas.")
+        for clave, dato in valor.items():
+            validar_estructura(dato, propiedades[clave], f"{ruta}.{clave}")
+    elif tipo == "ARRAY":
+        if not isinstance(valor, list):
+            raise ValueError(f"{ruta} debe ser una lista.")
+        for indice, dato in enumerate(valor):
+            validar_estructura(dato, esquema["items"], f"{ruta}[{indice}]")
+    elif tipo == "STRING":
+        if not isinstance(valor, str):
+            raise ValueError(f"{ruta} debe ser texto.")
+    elif tipo == "BOOLEAN":
+        if not isinstance(valor, bool):
+            raise ValueError(f"{ruta} debe ser booleano.")
+    elif tipo == "NUMBER":
+        if isinstance(valor, bool) or not isinstance(valor, (int, float)) or not isfinite(valor):
+            raise ValueError(f"{ruta} debe ser un número finito.")
+    else:
+        raise ValueError(f"Tipo de esquema no admitido: {tipo}.")
+
+    if "enum" in esquema and valor not in esquema["enum"]:
+        raise ValueError(f"{ruta} tiene un valor no permitido.")
+
+
+def parsear_respuesta_json(texto, esquema):
+    """Acepta JSON puro o un único bloque Markdown y verifica su estructura."""
+    if not isinstance(texto, str):
+        raise ValueError("La respuesta debe ser texto.")
+    limpio = re.sub(r"^```(?:json)?\s*|\s*```$", "", texto.strip(), flags=re.IGNORECASE)
+    try:
+        datos = json.loads(limpio)
+    except json.JSONDecodeError as error:
+        raise ValueError("La respuesta del modelo no es JSON válido.") from error
+    validar_estructura(datos, esquema)
+    return datos
 
 
 # Extrae los tokens usados en la misma petición real.
@@ -151,82 +211,18 @@ def obtener_dato_de_prueba(pregunta):
     datos = enviar_peticion(url, body, api_key)
     return extraer_texto(datos)
 
-# Función principal para ejecutar el script de prueba
+# Ejemplo manual: la prueba de consistencia está en prompts/test_consistencia.py.
 if __name__ == "__main__":
-
-    pregunta = (
-        "Calcula el doble de (4 * 5). "
-        "Responde únicamente con el resultado numérico."
-    )
-
-    modelos = {
-        "gemini-3.5-flash-lite": {
-            "entrada": 0.30 / 1_000_000,
-            "salida": 2.50 / 1_000_000,
-        },
-        "gemini-3.6-flash": {
-            "entrada": 0.75 / 1_000_000,
-            "salida": 3.75 / 1_000_000,
-        },
-    }
-
-    repeticiones = 4
-
-    for modelo, precios in modelos.items():
-
-        # Cambia el modelo solo durante la ejecución
-        os.environ["GEMINI_MODEL"] = modelo
-
-        latencias = []
-        costos = []
-        correctas = 0
-
-        print(f"\n{'=' * 45}")
-        print(f"MODELO: {modelo}")
-        print(f"{'=' * 45}")
-
-        for i in range(repeticiones):
-
-            try:
-                url, body, api_key = armar_peticion(pregunta)
-
-                inicio = time.perf_counter()
-                datos = enviar_peticion(url, body, api_key)
-                latencia = time.perf_counter() - inicio
-
-                texto = extraer_texto(datos).strip()
-                tokens = extraer_uso_de_tokens(datos)
-
-                costo = calcular_costo(
-                    datos,
-                    precios["entrada"],
-                    precios["salida"],
-                )
-
-                latencias.append(latencia)
-                costos.append(costo)
-
-                if texto == "40":
-                    correctas += 1
-
-                print(f"\nIntento {i + 1}")
-                print(f"Respuesta: {texto}")
-                print(f"Latencia: {latencia:.2f} segundos")
-                print(f"Tokens totales: {tokens['total']}")
-                print(f"Costo estimado: USD {costo:.8f}")
-
-            except (RuntimeError, ValueError) as error:
-                print(f"\nIntento {i + 1}: ERROR - {error}")
-
-        if latencias:
-            promedio = sum(latencias) / len(latencias)
-            costo_total = sum(costos)
-
-            print("\n--- RESUMEN ---")
-            print(f"Modelo: {modelo}")
-            print(f"Pruebas exitosas: {len(latencias)}")
-            print(f"Respuestas correctas: {correctas}")
-            print(f"Latencia promedio: {promedio:.2f} segundos")
-            print(f"Costo total estimado: USD {costo_total:.8f}")
-        else:
-            print("\nNo hubo pruebas exitosas.")
+    pregunta = "¿Qué es El Niño? Responde en dos oraciones."
+    try:
+        url, body, api_key = armar_peticion(pregunta)
+        inicio = time.perf_counter()
+        datos = enviar_peticion(url, body, api_key)
+        print(extraer_texto(datos))
+        print(f"Latencia: {time.perf_counter() - inicio:.2f} segundos")
+        print(
+            "Costo estimado: USD "
+            f"{calcular_costo(datos, PRECIO_ENTRADA_POR_TOKEN, PRECIO_SALIDA_POR_TOKEN):.8f}"
+        )
+    except (RuntimeError, ValueError) as error:
+        print(f"Error: {error}")

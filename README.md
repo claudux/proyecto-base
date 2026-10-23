@@ -1,27 +1,95 @@
-# Plantilla de repositorio base — Especialización en Desarrollo con IA Generativa (Accenture)
+# Miniaplicación Gemini: consultas sobre El Niño en Chile
 
-Esta es la estructura base que vas a usar como punto de partida para tu proyecto en este programa. Es la misma estructura que vas a ir ampliando bloque a bloque, hasta llegar a la aplicación completa que entregas en el Gate 3.
+Proyecto Python que consume la API REST de Gemini. Su estado actual reúne un
+cliente de consultas, medición de uso y costo estimado, y un banco de prompts para
+explicar el fenómeno de El Niño en Chile, extraer datos de textos meteorológicos
+y evaluar afirmaciones. Es un prototipo educativo; no emite pronósticos ni alertas.
 
-## Cómo empezar
+## Funcionalidades
 
-Estos pasos se completan de forma progresiva a lo largo de la Unidad U1.2, no todos el mismo día:
+- Construye peticiones a `models.generateContent` con la pregunta del usuario,
+  una instrucción de sistema opcional y un esquema JSON opcional.
+- Envía la clave mediante la cabecera `x-goog-api-key`, sin incluirla en el código
+  ni en la URL.
+- Extrae el texto y los metadatos de tokens de la respuesta, y calcula un costo
+  estimado con las tarifas configuradas para el modelo elegido.
+- Interpreta y valida respuestas JSON: claves, tipos y valores permitidos.
+- Prueba tres prompts con tres llamadas reales por prompt y registra el resultado
+  de cada ejecución.
 
-1. Descarga este archivo comprimido (adjunto en la plataforma) y descomprímelo en tu computador. Inicializa el control de versiones sobre esa carpeta y registra tu primer commit con esta estructura base, tal como llegó, antes de modificar nada.
-2. Crea tu entorno virtual de Python (por ejemplo, con `venv`) y actívalo.
-3. Instala las dependencias que necesites y regístralas en `requirements.txt` (al inicio puede estar vacío o con muy pocas).
-4. Copia `.env.example` a un archivo nuevo llamado `.env`, y completa ahí tus credenciales reales (llaves de API, tokens). El archivo `.env` nunca se sube al repositorio: ya está excluido en `.gitignore`.
+El modelo predeterminado es `gemini-3.5-flash-lite`, según la
+[decisión de arquitectura](docs/decision-arquitectura.md). La variable
+`GEMINI_MODEL` permite elegir otro modelo; si se cambia, también deben revisarse
+las tarifas usadas en el cálculo de costo.
 
-## Estructura de carpetas
+## Estructura del repositorio
 
-- `src/` : todo el código fuente de tu proyecto va aquí.
-- `docs/` : documentación técnica del proyecto (diagramas, decisiones de arquitectura, notas).
-- `tests/` : pruebas de tu código (las vas a usar más adelante en el programa, cuando el proyecto lo requiera).
-- `requirements.txt` : dependencias de Python de tu proyecto, para que cualquier otra persona pueda reconstruir tu entorno con un solo comando.
-- `.env.example` : plantilla de las variables de entorno que tu proyecto necesita, sin valores reales. Tu archivo `.env` real (con tus credenciales) nunca se commitea.
-- `.gitignore` : le dice a Git qué archivos y carpetas ignorar (entre ellos, tu entorno virtual y tu archivo `.env`).
+| Ruta | Contenido |
+| --- | --- |
+| `src/consumir_gemini.py` | Cliente REST, validación de respuestas y cálculo de costo. |
+| `src/url_rota.py` | Ejercicio previo de manejo de errores de red. |
+| `prompts/banco.py` | Tres prompts con instrucciones, entradas de ejemplo y esquemas JSON. |
+| `prompts/test_consistencia.py` | Ejecución repetida del banco contra Gemini. |
+| `prompts/registro_resultados.json` | Último registro generado por la prueba. |
+| `docs/` | Diagrama, decisión de arquitectura y respaldos de pruebas. |
+| `requirements.txt` | Dependencias del entorno Python. |
+| `.env.example` | Plantilla de configuración sin credenciales reales. |
 
-## Reglas que se mantienen durante todo el programa
+## Instalación y configuración
 
-- Ningún secreto (contraseña, llave de API, token) va escrito directamente en el código ni en ningún archivo que se suba al repositorio.
-- Cada proyecto nuevo tiene su propio entorno virtual: no se comparten dependencias entre proyectos distintos.
-- Todo el trabajo que se entrega en este programa vive en un repositorio de GitHub, sin excepción.
+Desde la raíz del repositorio, en PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+Copy-Item .env.example .env
+```
+
+Edita `.env` y reemplaza `tu_llave_aqui` por tu clave de Gemini. El archivo
+`.env` está excluido por `.gitignore`; no debe agregarse al repositorio. La
+configuración de ejemplo ya indica el modelo elegido.
+
+## Ejecución
+
+Para una consulta de ejemplo y su costo estimado:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.consumir_gemini
+```
+
+Para ejecutar el banco de prompts:
+
+```powershell
+.\.venv\Scripts\python.exe -m prompts.test_consistencia
+```
+
+La prueba realiza nueve llamadas reales en total y sobrescribe
+`prompts/registro_resultados.json` con la fecha, el modelo, los éxitos y los
+motivos de los fallos. La ejecución consume cuota de la API. El registro actual
+muestra **3/3 respuestas estructuralmente válidas por prompt** con
+`gemini-3.5-flash-lite`. Esta medición comprueba el formato y el esquema JSON;
+no certifica la exactitud científica del contenido generado.
+
+## Historial de avances
+
+Los siguientes hitos proceden de los commits existentes en Git:
+
+| Fecha | Avance | Commits |
+| --- | --- | --- |
+| 2026-10-09 | Creación de la estructura inicial, plantilla de entorno y reglas de exclusión. | `98ce847` |
+| 2026-10-11 | Configuración de dependencias y respaldo de la prueba en Postman. | `174ef9d`, `92464a2`, `7229804` |
+| 2026-10-12 | Primera versión del consumo del servicio y ejercicio de error de red. | `377bf63` |
+| 2026-10-16 | Refactorización del cliente, manejo de excepciones y comentarios sobre responsabilidades. | `7251cd2`, `34b9054` |
+| 2026-10-19 | Incorporación del diagrama de arquitectura. | `9419341` |
+| 2026-10-20 | Medición de tokens y costo, actualización del diagrama y documentación de la elección del modelo. | `75d9cef`, `4f7d490` |
+
+El banco de prompts sobre El Niño en Chile, la validación JSON y su registro de
+consistencia son avances posteriores que todavía no forman parte de un commit.
+
+## Alcance de los resultados
+
+Las tendencias climáticas no describen necesariamente lo que ocurrirá en una
+región o fecha concretas. Para información meteorológica vigente, consulta los
+boletines de la Dirección Meteorológica de Chile. Los costos mostrados por el
+prototipo son estimaciones basadas en los tokens reportados por la API, no cargos
+facturados.
