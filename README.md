@@ -82,9 +82,7 @@ Los siguientes hitos proceden de los commits existentes en Git:
 | 2026-10-16 | Refactorización del cliente, manejo de excepciones y comentarios sobre responsabilidades. | `7251cd2`, `34b9054` |
 | 2026-10-19 | Incorporación del diagrama de arquitectura. | `9419341` |
 | 2026-10-20 | Medición de tokens y costo, actualización del diagrama y documentación de la elección del modelo. | `75d9cef`, `4f7d490` |
-
-El banco de prompts sobre El Niño en Chile, la validación JSON y su registro de
-consistencia son avances posteriores que todavía no forman parte de un commit.
+| 2026-10-23 | Incorporación del banco de prompts sobre El Niño en Chile, validación JSON, prueba de consistencia, registro de resultados y documentación actualizada. | `a6fcc4d` |
 
 ## Alcance de los resultados
 
