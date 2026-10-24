@@ -52,7 +52,7 @@ configuración de ejemplo ya indica el modelo elegido.
 
 ## Ejecución
 
-Para una consulta de ejemplo y su costo estimado:
+Para ejecutar una consulta y mostrar su costo estimado:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.consumir_gemini
@@ -70,79 +70,6 @@ motivos de los fallos. La ejecución consume cuota de la API. El registro actual
 muestra **3/3 respuestas estructuralmente válidas por prompt** con
 `gemini-3.5-flash-lite`. Esta medición comprueba el formato y el esquema JSON;
 no certifica la exactitud científica del contenido generado.
-
-## Ensayo de instalación limpia para Gate 1
-
-Haz este ensayo después de subir a GitHub los cambios que quieres entregar. El
-clon debe estar en una carpeta nueva, fuera de tu copia de desarrollo. Desde la
-raíz de esa copia, en PowerShell:
-
-1. Clona el repositorio y entra en la copia nueva:
-
-   ```powershell
-   Set-Location ..
-   git clone https://github.com/claudux/proyecto-base.git prueba-gate1
-   Set-Location prueba-gate1
-   ```
-
-2. Crea un entorno virtual nuevo e instala únicamente lo declarado:
-
-   ```powershell
-   python --version
-   python -m venv .venv
-   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-   .\.venv\Scripts\python.exe -m pip check
-   ```
-
-3. Copia la plantilla y completa `GEMINI_API_KEY` en el nuevo `.env`. Conserva
-   `GEMINI_MODEL=gemini-3.5-flash-lite` para reproducir la elección documentada:
-
-   ```powershell
-   Copy-Item .env.example .env
-   notepad .env
-   ```
-
-4. Ejecuta una consulta real desde esa copia y comprueba el código de salida:
-
-   ```powershell
-   .\.venv\Scripts\python.exe -m src.consumir_gemini
-   if ($LASTEXITCODE -ne 0) { throw "Falló la consulta a Gemini" }
-   ```
-
-   Deben aparecer una respuesta del modelo, la latencia y el costo estimado.
-   Un mensaje `Error: ...` o un código de salida distinto de cero indican que
-   el ensayo falló, aunque el proceso haya terminado sin un traceback.
-
-5. Comprueba que la credencial no está rastreada y registra el ensayo:
-
-   ```powershell
-   git status --short
-   git check-ignore .env
-   git log --all --oneline -- .env
-   ```
-
-   `.env` no debe aparecer en `git status`; `git check-ignore` debe mostrar
-   `.env`; el último comando no debe mostrar commits. Anota la fecha, la versión
-   de Python, si la instalación y la consulta funcionaron, y cualquier ajuste
-   necesario en [la verificación del Gate 1](docs/verificacion-gate1.md). No
-   incluyas la clave ni el contenido de `.env` en ese registro.
-
-## Última verificación antes de entregar
-
-En el estado final que vas a presentar, ejecuta nuevamente el módulo desde la
-raíz del proyecto. Esto comprueba la condición no compensable de API funcional
-y código ejecutable:
-
-```powershell
-.\.venv\Scripts\python.exe -m src.consumir_gemini
-if ($LASTEXITCODE -ne 0) { throw "La verificación final falló" }
-git status --short
-```
-
-Confirma que se imprimió una respuesta real y que `git status` solo muestra los
-cambios que piensas incluir. Después registra el resultado, crea el commit final
-y sube el repositorio. Antes de compartir el enlace, confirma que quien evalúa
-puede abrirlo.
 
 ## Historial de avances
 
