@@ -35,20 +35,36 @@ las tarifas usadas en el cálculo de costo.
 | `requirements.txt` | Dependencias del entorno Python. |
 | `.env.example` | Plantilla de configuración sin credenciales reales. |
 
-## Instalación y configuración
+## Instalación desde el repositorio
 
-El entorno utilizado para verificar este proyecto usa Python 3.14.6. Desde la
-raíz del repositorio, en PowerShell:
+Necesitas Git, Python y una clave de API de Gemini. El proyecto se verificó con
+Python 3.14.6. En PowerShell:
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-Copy-Item .env.example .env
-```
+1. Clona el repositorio y entra en su carpeta:
 
-Edita `.env` y reemplaza `tu_llave_aqui` por tu clave de Gemini. El archivo
-`.env` está excluido por `.gitignore`; no debe agregarse al repositorio. La
-configuración de ejemplo ya indica el modelo elegido.
+   ```powershell
+   git clone https://github.com/claudux/proyecto-base.git
+   Set-Location proyecto-base
+   ```
+
+2. Crea un entorno virtual e instala las dependencias declaradas:
+
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   .\.venv\Scripts\python.exe -m pip check
+   ```
+
+3. Crea tu configuración local:
+
+   ```powershell
+   Copy-Item .env.example .env
+   notepad .env
+   ```
+
+   Reemplaza `tu_llave_aqui` por tu clave en `GEMINI_API_KEY`. El modelo
+   configurado en la plantilla es `gemini-3.5-flash-lite`. `.env` está excluido
+   por `.gitignore` y no debe añadirse al repositorio.
 
 ## Ejecución
 
@@ -57,6 +73,10 @@ Para ejecutar una consulta y mostrar su costo estimado:
 ```powershell
 .\.venv\Scripts\python.exe -m src.consumir_gemini
 ```
+
+Una ejecución correcta muestra la respuesta de Gemini, la latencia y el costo
+estimado. Si la consulta falla, el programa termina con código de salida distinto
+de cero y muestra el motivo.
 
 Para ejecutar el banco de prompts:
 
