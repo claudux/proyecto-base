@@ -31,7 +31,7 @@ las tarifas usadas en el cálculo de costo.
 | `prompts/banco.py` | Tres prompts con instrucciones, entradas de ejemplo y esquemas JSON. |
 | `prompts/test_consistencia.py` | Ejecución repetida del banco contra Gemini. |
 | `prompts/registro_resultados.json` | Último registro generado por la prueba. |
-| `docs/` | Diagrama, decisión de arquitectura y respaldos de pruebas. |
+| `docs/` | Diagrama, decisión de arquitectura, respaldos y verificación del Gate 1. |
 | `requirements.txt` | Dependencias del entorno Python. |
 | `.env.example` | Plantilla de configuración sin credenciales reales. |
 
@@ -157,6 +157,7 @@ Los siguientes hitos proceden de los commits existentes en Git:
 | 2026-10-19 | Incorporación del diagrama de arquitectura. | `9419341` |
 | 2026-10-20 | Medición de tokens y costo, actualización del diagrama y documentación de la elección del modelo. | `75d9cef`, `4f7d490` |
 | 2026-10-23 | Incorporación del banco de prompts sobre El Niño en Chile, validación JSON, prueba de consistencia, registro de resultados y documentación actualizada. | `a6fcc4d` |
+| 2026-10-23 | Preparación del Gate 1: fallo detectable en la ejecución, dependencias directas y registro de verificación local. | `80b7cae` |
 
 ## Alcance de los resultados
 
