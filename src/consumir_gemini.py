@@ -225,4 +225,4 @@ if __name__ == "__main__":
             f"{calcular_costo(datos, PRECIO_ENTRADA_POR_TOKEN, PRECIO_SALIDA_POR_TOKEN):.8f}"
         )
     except (RuntimeError, ValueError) as error:
-        print(f"Error: {error}")
+        raise SystemExit(f"Error: {error}") from error
