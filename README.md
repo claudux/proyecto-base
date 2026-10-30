@@ -188,18 +188,21 @@ continúan pendientes; las pruebas actuales verifican el reintento con respuesta
 
 ## Historial de avances
 
-Los siguientes hitos proceden de los commits existentes en Git:
+Los siguientes hitos proceden de los commits existentes. Desde el cierre
+técnico del Gate 1, los avances se presentan como parte del Módulo 2:
 
-| Fecha | Avance | Commits |
-| --- | --- | --- |
-| 2026-10-09 | Creación de la estructura inicial, plantilla de entorno y reglas de exclusión. | `98ce847` |
-| 2026-10-11 | Configuración de dependencias y respaldo de la prueba en Postman. | `174ef9d`, `92464a2`, `7229804` |
-| 2026-10-12 | Primera versión del consumo del servicio y ejercicio de error de red. | `377bf63` |
-| 2026-10-16 | Refactorización del cliente, manejo de excepciones y comentarios sobre responsabilidades. | `7251cd2`, `34b9054` |
-| 2026-10-19 | Incorporación del diagrama de arquitectura. | `9419341` |
-| 2026-10-20 | Medición de tokens y costo, actualización del diagrama y documentación de la elección del modelo. | `75d9cef`, `4f7d490` |
-| 2026-10-23 | Incorporación del banco de prompts sobre El Niño en Chile, validación JSON, prueba de consistencia, registro de resultados y documentación actualizada. | `a6fcc4d` |
-| 2026-10-23 | Preparación del Gate 1: fallo detectable en la ejecución, dependencias directas y registro de verificación local. | `80b7cae` |
+| Etapa | Fecha | Avance | Commits |
+| --- | --- | --- | --- |
+| Módulo 1 · Gate 1 | 2026-10-09 | Creación de la estructura inicial, plantilla de entorno y reglas de exclusión. | `98ce847` |
+| Módulo 1 · Gate 1 | 2026-10-11 | Configuración de dependencias y respaldo de la prueba en Postman. | `174ef9d`, `92464a2`, `7229804` |
+| Módulo 1 · Gate 1 | 2026-10-12 | Primera versión del consumo del servicio y ejercicio de error de red. | `377bf63` |
+| Módulo 1 · Gate 1 | 2026-10-16 | Refactorización del cliente, manejo de excepciones y comentarios sobre responsabilidades. | `7251cd2`, `34b9054` |
+| Módulo 1 · Gate 1 | 2026-10-19 | Incorporación del diagrama de arquitectura. | `9419341` |
+| Módulo 1 · Gate 1 | 2026-10-20 | Medición de tokens y costo, actualización del diagrama y documentación de la elección del modelo. | `75d9cef`, `4f7d490` |
+| Módulo 1 · Gate 1 | 2026-10-23 | Banco de prompts sobre El Niño en Chile, validación JSON y prueba de consistencia. | `a6fcc4d` |
+| Módulo 1 · Gate 1 | 2026-10-23 | Verificación técnica, dependencias reproducibles y documentación de instalación y ejecución. | `666f827`, `80b7cae`, `b13e9be`, `ec7d86e`, `8ec48e9` |
+| Módulo 2 | 2026-10-30 | Vinculación de la base del Gate 1 con la visión del asistente académico. | `8446984` |
+| Módulo 2 | 2026-10-30 | Integración del cliente modular, pruebas unitarias y ejemplo académico simulado. | `89af54b` |
 
 ## Alcance de los resultados
 
