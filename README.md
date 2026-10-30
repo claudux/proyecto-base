@@ -5,6 +5,10 @@ cliente de consultas, medición de uso y costo estimado, y un banco de prompts p
 explicar el fenómeno de El Niño en Chile, extraer datos de textos meteorológicos
 y evaluar afirmaciones. Es un prototipo educativo; no emite pronósticos ni alertas.
 
+Este caso de prueba permite verificar la base técnica del Gate 1. La visión del
+proyecto final es un asistente de consulta de información académica, descrito más
+adelante en este documento.
+
 ## Funcionalidades
 
 - Construye peticiones a `models.generateContent` con la pregunta del usuario,
@@ -21,6 +25,38 @@ El modelo predeterminado es `gemini-3.5-flash-lite`, según la
 [decisión de arquitectura](docs/decision-arquitectura.md). La variable
 `GEMINI_MODEL` permite elegir otro modelo; si se cambia, también deben revisarse
 las tarifas usadas en el cálculo de costo.
+
+## Visión del proyecto final y alcance del Gate 1
+
+Al completar la ficha de alineación técnica, tenía identificado el problema que
+quería abordar, pero aún no conocía con claridad el contenido ni la progresión
+del curso. Por eso planteé como objetivo inicial, de manera tentativa, un
+asistente de gestión académica. Con lo aprendido en el Módulo 1, esa visión se
+puede precisar: desarrollar una aplicación que permita consultar indicadores
+educativos agregados y documentación institucional mediante lenguaje natural,
+con respuestas fundamentadas en la información disponible para apoyar la toma
+de decisiones.
+
+Un caso de uso previsto es preguntar cómo cambió la tasa de aprobación entre
+dos períodos y qué documento institucional define ese indicador. Una respuesta
+útil debería identificar los períodos comparados, mostrar los datos utilizados,
+indicar la fuente documental y reconocer si falta información para responder.
+Esta funcionalidad académica es una meta del proyecto final; este repositorio
+todavía no integra datos académicos ni documentos institucionales.
+
+El Gate 1 entrega la base técnica verificable: configuración del entorno,
+consumo de la API, manejo de errores, separación de responsabilidades,
+procesamiento y validación de respuestas estructuradas, medición de uso y costo,
+y pruebas de consistencia de prompts. Los ejemplos sobre El Niño en Chile
+permiten comprobar esas capacidades con un tema acotado. Su resultado no
+demuestra todavía la exactitud de una respuesta académica ni la trazabilidad de
+sus fuentes.
+
+En las siguientes etapas se prevé incorporar fuentes académicas autorizadas,
+adaptar los prompts y validar las respuestas frente a esos datos y documentos.
+La solución final deberá reunir estas capacidades en un flujo utilizable y
+evaluar tanto su funcionamiento como la calidad de las respuestas. La base de
+consumo y validación construida en este Gate se conserva para esa evolución.
 
 ## Estructura del repositorio
 

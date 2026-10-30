@@ -19,3 +19,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Borrador local del módulo 2 mientras Gate 1 está en evaluación
+/modulo2_borrador/
