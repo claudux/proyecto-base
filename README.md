@@ -9,6 +9,10 @@ Este caso de prueba permite verificar la base técnica del Gate 1. La visión de
 proyecto final es un asistente de consulta de información académica, descrito más
 adelante en este documento.
 
+El proyecto también incorpora un cliente modular desarrollado para el Módulo 2.
+La implementación del Gate 1 se conserva para que ambas etapas puedan revisarse
+por separado mientras llega su evaluación.
+
 ## Funcionalidades
 
 - Construye peticiones a `models.generateContent` con la pregunta del usuario,
@@ -67,14 +71,18 @@ consumo y validación construida en este Gate se conserva para esa evolución.
 | `prompts/banco.py` | Tres prompts con instrucciones, entradas de ejemplo y esquemas JSON. |
 | `prompts/test_consistencia.py` | Ejecución repetida del banco contra Gemini. |
 | `prompts/registro_resultados.json` | Último registro generado por la prueba. |
-| `docs/` | Diagrama, decisión de arquitectura, respaldos y verificación del Gate 1. |
+| `cliente_gemini/` | Cliente modular del Módulo 2: configuración, transporte, reintentos, respuestas y costos. |
+| `tests/` | Pruebas unitarias del cliente modular, sin red ni credencial real. |
+| `ejemplo_academico_mock.py` | Ejemplo académico con datos y respuesta simulados. |
+| `ejemplo_cliente_modulo2.py`, `ejemplo_banco_modulo2.py` y `ejecutar_banco_modulo2.py` | Ejemplos de consulta real mediante el cliente modular. |
+| `docs/` | Diagrama y decisión de arquitectura del Gate 1, diseño del cliente modular y registros de verificación. |
 | `requirements.txt` | Dependencias del entorno Python. |
 | `.env.example` | Plantilla de configuración sin credenciales reales. |
 
 ## Instalación desde el repositorio
 
-Necesitas Git, Python y una clave de API de Gemini. El proyecto se verificó con
-Python 3.14.6. En PowerShell:
+Necesitas Git y Python; para las consultas reales también necesitas una clave de
+API de Gemini. El proyecto se verificó con Python 3.14.6. En PowerShell:
 
 1. Clona el repositorio y entra en su carpeta:
 
@@ -126,6 +134,57 @@ motivos de los fallos. La ejecución consume cuota de la API. El registro actual
 muestra **3/3 respuestas estructuralmente válidas por prompt** con
 `gemini-3.5-flash-lite`. Esta medición comprueba el formato y el esquema JSON;
 no certifica la exactitud científica del contenido generado.
+
+## Módulo 2: cliente modular y ejemplo académico
+
+El cliente del Módulo 2 ofrece una entrada pública,
+`ClienteGemini.consultar_modelo(...)`, que construye la petición, la envía y
+devuelve el texto procesado. Clasifica 401/403 como errores de autenticación sin
+reintento; trata 429, 5xx, timeout y fallos de conexión como temporales. Para
+estos últimos aplica hasta tres intentos con backoff exponencial, techo y jitter.
+También registra los tokens y el costo estimado por operación y por sesión.
+El [diseño del cliente](docs/diseno-modulo2.md) explica sus componentes y el
+contrato de errores.
+
+Las pruebas de `tests/` usan respuestas y esperas simuladas. Para ejecutarlas
+desde la raíz del proyecto, sin `.env` y sin consumir cuota de la API:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests -q
+```
+
+El ejemplo `ejemplo_academico_mock.py` conecta esta base técnica con la visión
+del proyecto final. Presenta tasas de aprobación **ficticias** de 68 % en 2024
+y 74 % en 2025, una definición y una fuente documental igualmente ficticias.
+La respuesta simulada informa un aumento de **6 puntos porcentuales**, muestra
+la fuente y advierte que no describe a una institución real. Se ejecuta sin
+clave de API:
+
+```powershell
+.\.venv\Scripts\python.exe ejemplo_academico_mock.py
+```
+
+El ejemplo usa un transporte simulado que devuelve una respuesta con el formato
+de Gemini. El cliente valida el esquema JSON y calcula un costo a partir de
+tokens simulados. Esto comprueba el flujo del software, pero no demuestra que
+Gemini haya generado la respuesta, que existan datos académicos integrados ni
+que la fuente se haya verificado contra un documento real.
+
+Para realizar consultas reales con el cliente modular, configura `.env` como
+se indica arriba y ejecuta, según el alcance que quieras comprobar:
+
+```powershell
+.\.venv\Scripts\python.exe ejemplo_cliente_modulo2.py
+.\.venv\Scripts\python.exe ejemplo_banco_modulo2.py
+.\.venv\Scripts\python.exe ejecutar_banco_modulo2.py
+```
+
+El último comando hace tres llamadas reales, una por cada prompt del banco
+existente en `prompts/banco.py`, consume cuota y no modifica
+`prompts/registro_resultados.json`. El Gate 1 sigue en evaluación; sus archivos
+en `src/` y `prompts/` no se sustituyeron. La prueba con un 429 real y su registro
+continúan pendientes; las pruebas actuales verifican el reintento con respuestas
+429 simuladas.
 
 ## Historial de avances
 
