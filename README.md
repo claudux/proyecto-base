@@ -75,6 +75,9 @@ consumo y validación construida en este Gate se conserva para esa evolución.
 | `tests/` | Pruebas unitarias del cliente modular, sin red ni credencial real. |
 | `ejemplo_academico_mock.py` | Ejemplo académico con datos y respuesta simulados. |
 | `ejemplo_cliente_modulo2.py`, `ejemplo_banco_modulo2.py` y `ejecutar_banco_modulo2.py` | Ejemplos de consulta real mediante el cliente modular. |
+| `pipeline_texto.py` y `metricas_texto.py` | Normalización y métricas léxicas de la Unidad 2.2. |
+| `casos_academicos.py` y `evaluar_unidad_2_2.py` | Veinte casos ficticios, consultas reales y registro reanudable de resultados. |
+| `evaluaciones/unidad_2_2/` | Respuestas, métricas y revisión manual de la Unidad 2.2. |
 | `docs/` | Diagrama y decisión de arquitectura del Gate 1, diseño del cliente modular y registros de verificación. |
 | `requirements.txt` | Dependencias del entorno Python. |
 | `.env.example` | Plantilla de configuración sin credenciales reales. |
@@ -185,6 +188,48 @@ existente en `prompts/banco.py`, consume cuota y no modifica
 en `src/` y `prompts/` no se sustituyeron. La prueba con un 429 real y su registro
 continúan pendientes; las pruebas actuales verifican el reintento con respuestas
 429 simuladas.
+
+### Unidad 2.2: evaluación de respuestas académicas
+
+El pipeline de `pipeline_texto.py` convierte a minúsculas, separa puntuación,
+normaliza espacios y tokeniza. `metricas_texto.py` compara referencia y respuesta
+con `Counter`, contando repeticiones para calcular precisión, cobertura y F1.
+Las métricas describen coincidencia de palabras; no comprueban por sí solas que
+una cifra, una unidad o una afirmación sea correcta.
+
+`casos_academicos.py` contiene **20 preguntas sencillas** sobre indicadores y
+definiciones académicas. Todas las cifras, las fuentes y los documentos son
+ficticios. Cada caso guarda una referencia escrita antes de consultar el modelo.
+El script de evaluación usa `ClienteGemini.consultar_modelo` con ese contexto y
+guarda cada respuesta en
+[`resultados_metricas.json`](evaluaciones/unidad_2_2/resultados_metricas.json)
+inmediatamente después de recibirla. Si la ejecución se interrumpe, una nueva
+ejecución omite los casos ya guardados. Requiere la clave configurada en `.env`
+y consume cuota de la API:
+
+```powershell
+.\.venv\Scripts\python.exe evaluar_unidad_2_2.py
+```
+
+Para limitar una ejecución a tres consultas nuevas, se puede agregar
+`--limite 3`. Las tres primeras entradas conservan métricas del texto crudo y
+del texto procesado. Por ejemplo, en A03 el F1 pasó de **0,800** a **1,000**
+tras normalizar el formato. La ejecución registrada obtuvo **20/20 respuestas**,
+con F1 promedio **0,755** y costo total estimado **USD 0,00205410**. Estos
+números describen una única muestra de respuestas a datos inventados; no son
+una evaluación de exactitud institucional ni un cargo facturado.
+
+Se revisaron manualmente **12 casos**: los cinco F1 más bajos, los cinco más
+altos y dos adicionales por omisión y negación. La
+[`revision_manual.json`](evaluaciones/unidad_2_2/revision_manual.json) registra
+corrección factual, completitud, contradicción y la justificación de cada caso.
+El documento de [límites de la métrica](docs/limites_metrica.md) explica los
+hallazgos: hubo respuestas correctas con F1 bajo y una respuesta con F1 alto
+que confundió porcentajes con puntos porcentuales. Los cálculos y las fuentes
+deberán verificarse contra datos autorizados cuando se integre el proyecto final.
+
+Las pruebas de este pipeline y las métricas se incluyen en el mismo comando de
+`pytest` mostrado arriba; no necesitan API ni credenciales.
 
 ## Historial de avances
 

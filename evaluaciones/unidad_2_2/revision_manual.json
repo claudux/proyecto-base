@@ -1,0 +1,67 @@
+{
+  "fecha_revision": "2026-10-30",
+  "criterio_muestra": "Cinco F1 más bajos, cinco F1 más altos y dos casos adicionales de interés: A04 (omisión de cifra) y A20 (negación).",
+  "total_resultados": 20,
+  "casos_revisados": [
+    {
+      "id": "A18", "f1_redondeado": 0.437,
+      "correccion_factual": "si", "completitud": "si", "contradiccion": "no",
+      "nota": "La respuesta reconoce que faltan edades y no inventa un promedio; el F1 bajo se debe a la paráfrasis."
+    },
+    {
+      "id": "A09", "f1_redondeado": 0.471,
+      "correccion_factual": "si", "completitud": "parcialmente", "contradiccion": "no",
+      "nota": "Indica correctamente 90 % y 92 %, pero no expresa el cambio solicitado de 2 puntos porcentuales."
+    },
+    {
+      "id": "A16", "f1_redondeado": 0.519,
+      "correccion_factual": "parcialmente", "completitud": "no", "contradiccion": "no",
+      "nota": "El contexto entrega 40 de 200 estudiantes, suficientes para calcular 20 %. El modelo afirma que el porcentaje no se especifica y omite el cálculo."
+    },
+    {
+      "id": "A15", "f1_redondeado": 0.571,
+      "correccion_factual": "parcialmente", "completitud": "no", "contradiccion": "no",
+      "nota": "El contexto entrega 18 de 20 cursos, suficientes para calcular 90 %. La respuesta dice que el porcentaje no aparece y no resuelve la tarea."
+    },
+    {
+      "id": "A19", "f1_redondeado": 0.595,
+      "correccion_factual": "si", "completitud": "si", "contradiccion": "no",
+      "nota": "Reconoce correctamente que no hay dato de aprobación para 2026; F1 moderado por usar otras palabras."
+    },
+    {
+      "id": "A11", "f1_redondeado": 0.897,
+      "correccion_factual": "no", "completitud": "no", "contradiccion": "no",
+      "nota": "La referencia indica una baja de 3 puntos porcentuales, de 12 % a 9 %. La respuesta dice 3 %, que expresa otra magnitud; el F1 alto no detecta el error de unidad."
+    },
+    {
+      "id": "A14", "f1_redondeado": 0.903,
+      "correccion_factual": "si", "completitud": "si", "contradiccion": "no",
+      "nota": "Indica correctamente 30 préstamos adicionales en 2025 y cita la fuente ficticia."
+    },
+    {
+      "id": "A17", "f1_redondeado": 0.933,
+      "correccion_factual": "si", "completitud": "si", "contradiccion": "no",
+      "nota": "Conserva el mínimo de 60 puntos sobre 100 y la fuente ficticia."
+    },
+    {
+      "id": "A01", "f1_redondeado": 0.963,
+      "correccion_factual": "si", "completitud": "si", "contradiccion": "no",
+      "nota": "Conserva la tasa de 68 % para 2024 y cita la fuente ficticia."
+    },
+    {
+      "id": "A03", "f1_redondeado": 1.0,
+      "correccion_factual": "si", "completitud": "si", "contradiccion": "no",
+      "nota": "Informa correctamente el aumento de 6 puntos porcentuales y cita la fuente ficticia."
+    },
+    {
+      "id": "A04", "f1_redondeado": 0.846,
+      "correccion_factual": "si", "completitud": "parcialmente", "contradiccion": "no",
+      "nota": "Identifica 2025 como el año mayor, pero omite la tasa de 74 % que sí estaba en el contexto y en la referencia."
+    },
+    {
+      "id": "A20", "f1_redondeado": 0.8,
+      "correccion_factual": "si", "completitud": "si", "contradiccion": "no",
+      "nota": "Mantiene la negación: las convalidaciones quedan excluidas de la tasa, según la fuente ficticia."
+    }
+  ]
+}
