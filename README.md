@@ -287,8 +287,9 @@ técnico del Gate 1, los avances se presentan como parte del Módulo 2:
 | Módulo 1 · Gate 1 | 2026-10-23 | Verificación técnica, dependencias reproducibles y documentación de instalación y ejecución. | `666f827`, `80b7cae`, `b13e9be`, `ec7d86e`, `8ec48e9` |
 | Módulo 2 · Core | 2026-10-30 | Vinculación de la base del Gate 1 con la visión del asistente académico. | `8446984` |
 | Módulo 2 · Core | 2026-10-30 | Integración del cliente modular, pruebas unitarias y ejemplo académico simulado. | `89af54b` |
-| Módulo 2 · Core | 2026-10-30 | Actualización del historial del README para distinguir el Gate 1 de los avances del Módulo 2. | `48f021b` |
-| Módulo 2 · Core| 2026-10-30 | Evaluación de 20 respuestas académicas con métricas, pruebas y revisión manual documentada. | `f66ea30` |
+| Módulo 2 · Core | 2026-10-30 | Actualización del historial del README para distinguir el Gate 1 de los avances del Módulo 2. | `48f021b`, `a59220f` |
+| Módulo 2 · Core | 2026-10-30 | Evaluación de 20 respuestas académicas con métricas, pruebas y revisión manual documentada. | `f66ea30` |
+| Módulo 2 · Unidad 2.3 | 2026-11-02 | Orquestación académica con LangChain, adaptación del banco de prompts, pruebas y captura de ejecución. | `d87634f` |
 
 ## Alcance de los resultados
 
