@@ -1,57 +1,59 @@
-"""Prompts reutilizables para informar sobre El Niño en Chile.
+"""Banco de prompts académicos con datos y documentos ficticios.
 
-Cada entrada reúne una tarea, su ejemplo y el contrato JSON de salida.
+Cada entrada reúne una tarea, una consulta de ejemplo y su contrato JSON.
+No se usan datos de ninguna institución real.
 """
 
 BANCO_DE_PROMPTS = [
     {
-        "nombre": "explicar_fenomeno",
+        "nombre": "explicar_indicador",
         "system_instruction": (
-            "Eres un divulgador de meteorología para público de Chile. Explica en "
-            "español claro qué es El Niño y qué suele querer decir la expresión "
-            "'súper Niño'. Responde únicamente con un objeto JSON, sin Markdown, "
-            "con exactamente tres cadenas: fenomeno, posibles_efectos_en_chile y "
-            "limite_de_la_explicacion. Describe tendencias, nunca asegures que "
-            "ocurrirá un evento específico. No inventes fechas, cifras ni alertas vigentes."
+            "Explica el indicador académico usando exclusivamente el contexto "
+            "proporcionado. Devuelve solo un objeto JSON, sin Markdown, con "
+            "exactamente estas cadenas: indicador, definicion y fuente. "
+            "Si la definición o la fuente no está en el contexto, escribe "
+            "'no_indicado' en el campo correspondiente. No inventes normas "
+            "institucionales ni atribuyas datos ficticios a una institución real."
         ),
         "ejemplo_usuario": (
-            "¿Qué es un súper Niño y significa que lloverá mucho en todo Chile?"
+            "Contexto ficticio: La tasa de aprobación es el porcentaje de "
+            "estudiantes aprobados respecto de los evaluados en un período. "
+            "Fuente: Reglamento académico ficticio H. "
+            "Pregunta: ¿Qué significa la tasa de aprobación según este contexto?"
         ),
         "response_schema": {
             "type": "OBJECT",
             "properties": {
-                "fenomeno": {"type": "STRING"},
-                "posibles_efectos_en_chile": {"type": "STRING"},
-                "limite_de_la_explicacion": {"type": "STRING"},
+                "indicador": {"type": "STRING"},
+                "definicion": {"type": "STRING"},
+                "fuente": {"type": "STRING"},
             },
-            "required": [
-                "fenomeno",
-                "posibles_efectos_en_chile",
-                "limite_de_la_explicacion",
-            ],
+            "required": ["indicador", "definicion", "fuente"],
         },
     },
     {
-        "nombre": "extraer_boletin",
+        "nombre": "extraer_indicador",
         "system_instruction": (
-            "Extrae información meteorológica únicamente del texto proporcionado "
-            "por el usuario. Devuelve solo un objeto JSON, sin Markdown, con "
-            "exactamente estas claves: zona (string), periodo (string), "
-            "tendencia_precipitacion (string), fuente (string) y datos_faltantes "
-            "(lista de strings). Si un dato no aparece, escribe 'no_indicado' en "
-            "su campo y agrégalo a datos_faltantes. No completes datos usando "
-            "conocimientos externos ni conviertas una tendencia estacional en una alerta."
+            "Extrae datos académicos únicamente del contexto proporcionado. "
+            "Devuelve solo un objeto JSON, sin Markdown, con exactamente estas "
+            "claves: indicador (string), periodo (string), valor (string), "
+            "unidad (string), fuente (string) y datos_faltantes (lista de strings). "
+            "Si un dato no aparece, escribe 'no_indicado' en su campo y "
+            "agrégalo a datos_faltantes. Conserva la unidad y no calcules cifras "
+            "que el contexto no proporciona."
         ),
         "ejemplo_usuario": (
-            "Texto de prueba: Para la zona central, el trimestre junio-agosto "
-            "presenta una tendencia de precipitación sobre lo normal."
+            "Contexto ficticio: La tasa de aprobación fue 74 % en 2025. "
+            "Fuente: Ficha académica ficticia A. "
+            "Extrae el indicador, período, valor, unidad y fuente."
         ),
         "response_schema": {
             "type": "OBJECT",
             "properties": {
-                "zona": {"type": "STRING"},
+                "indicador": {"type": "STRING"},
                 "periodo": {"type": "STRING"},
-                "tendencia_precipitacion": {"type": "STRING"},
+                "valor": {"type": "STRING"},
+                "unidad": {"type": "STRING"},
                 "fuente": {"type": "STRING"},
                 "datos_faltantes": {
                     "type": "ARRAY",
@@ -59,30 +61,25 @@ BANCO_DE_PROMPTS = [
                 },
             },
             "required": [
-                "zona",
-                "periodo",
-                "tendencia_precipitacion",
-                "fuente",
-                "datos_faltantes",
+                "indicador", "periodo", "valor", "unidad", "fuente", "datos_faltantes"
             ],
         },
     },
     {
-        "nombre": "evaluar_afirmacion",
+        "nombre": "evaluar_afirmacion_academica",
         "system_instruction": (
-            "Evalúa una afirmación sobre El Niño en Chile usando exclusivamente "
-            "los antecedentes incluidos en el mensaje del usuario. Responde solo "
-            "con un objeto JSON, sin Markdown, con exactamente estas claves: "
-            "evaluacion (respaldada, exagerada o informacion_insuficiente), "
-            "justificacion (string) y requiere_fuente_actual (boolean). Si la "
-            "afirmación habla del estado presente, de una fecha futura o de una "
-            "alerta sin aportar una fuente fechada, indica que requiere una fuente "
-            "actual. No presentes una probabilidad climática como certeza."
+            "Evalúa una afirmación académica usando exclusivamente el contexto "
+            "proporcionado. Devuelve solo un objeto JSON, sin Markdown, con "
+            "exactamente estas claves: evaluacion (respaldada, contradicha o "
+            "informacion_insuficiente), justificacion (string) y "
+            "requiere_dato_adicional (boolean). Si falta el período, indicador "
+            "o documento necesario, indica información insuficiente. Distingue "
+            "porcentajes de puntos porcentuales y no inventes cifras."
         ),
         "ejemplo_usuario": (
-            "Afirmación: Un súper Niño provocará inundaciones en todas las "
-            "regiones de Chile. Antecedente: En algunos episodios de El Niño "
-            "aumenta la probabilidad de precipitaciones en parte de la zona central."
+            "Contexto ficticio: La tasa de aprobación fue 68 % en 2024 y "
+            "74 % en 2025. Fuente: Ficha académica ficticia A. "
+            "Afirmación: La tasa de aprobación de 2026 fue 80 %."
         ),
         "response_schema": {
             "type": "OBJECT",
@@ -90,18 +87,14 @@ BANCO_DE_PROMPTS = [
                 "evaluacion": {
                     "type": "STRING",
                     "enum": [
-                        "respaldada",
-                        "exagerada",
-                        "informacion_insuficiente",
+                        "respaldada", "contradicha", "informacion_insuficiente"
                     ],
                 },
                 "justificacion": {"type": "STRING"},
-                "requiere_fuente_actual": {"type": "BOOLEAN"},
+                "requiere_dato_adicional": {"type": "BOOLEAN"},
             },
             "required": [
-                "evaluacion",
-                "justificacion",
-                "requiere_fuente_actual",
+                "evaluacion", "justificacion", "requiere_dato_adicional"
             ],
         },
     },

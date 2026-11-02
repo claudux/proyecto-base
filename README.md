@@ -1,17 +1,15 @@
-# Miniaplicación Gemini: consultas sobre El Niño en Chile
+# Asistente académico con Gemini y LangChain
 
-Proyecto Python que consume la API REST de Gemini. Su estado actual reúne un
-cliente de consultas, medición de uso y costo estimado, y un banco de prompts para
-explicar el fenómeno de El Niño en Chile, extraer datos de textos meteorológicos
-y evaluar afirmaciones. Es un prototipo educativo; no emite pronósticos ni alertas.
+Prototipo Python para consultar indicadores educativos agregados y definiciones
+académicas en lenguaje natural. Usa Gemini mediante un cliente REST modular y
+LangChain para orquestar consultas. Los datos, documentos y fuentes incluidos en
+el repositorio son **ficticios**: permiten probar el software, pero no representan
+a una institución real ni deben usarse para decisiones académicas.
 
-Este caso de prueba permite verificar la base técnica del Gate 1. La visión del
-proyecto final es un asistente de consulta de información académica, descrito más
-adelante en este documento.
-
-El proyecto también incorpora un cliente modular desarrollado para el Módulo 2.
-La implementación del Gate 1 se conserva para que ambas etapas puedan revisarse
-por separado mientras llega su evaluación.
+El objetivo del proyecto es responder preguntas como «¿cómo cambió la tasa de
+aprobación entre dos períodos?» y «¿qué documento define ese indicador?», con
+datos, unidades y fuentes explícitas. La integración de fuentes institucionales
+autorizadas y su verificación automática siguen pendientes.
 
 ## Funcionalidades
 
@@ -22,42 +20,39 @@ por separado mientras llega su evaluación.
 - Extrae el texto y los metadatos de tokens de la respuesta, y calcula un costo
   estimado con las tarifas configuradas para el modelo elegido.
 - Interpreta y valida respuestas JSON: claves, tipos y valores permitidos.
-- Prueba tres prompts con tres llamadas reales por prompt y registra el resultado
-  de cada ejecución.
+- Incluye tres prompts académicos estructurados: explicar un indicador, extraer
+  un dato y evaluar si una afirmación está respaldada por el contexto.
+- Clasifica y enruta preguntas académicas mediante LangChain; cada ruta combina
+  extracción, análisis, redacción y revisión, con manejo de fallos.
 
 El modelo predeterminado es `gemini-3.5-flash-lite`, según la
 [decisión de arquitectura](docs/decision-arquitectura.md). La variable
 `GEMINI_MODEL` permite elegir otro modelo; si se cambia, también deben revisarse
 las tarifas usadas en el cálculo de costo.
 
-## Visión del proyecto final y alcance del Gate 1
+## Objetivo y alcance actual
 
-Al completar la ficha de alineación técnica, tenía identificado el problema que
-quería abordar, pero aún no conocía con claridad el contenido ni la progresión
-del curso. Por eso planteé como objetivo inicial, de manera tentativa, un
-asistente de gestión académica. Con lo aprendido en el Módulo 1, esa visión se
-puede precisar: desarrollar una aplicación que permita consultar indicadores
-educativos agregados y documentación institucional mediante lenguaje natural,
-con respuestas fundamentadas en la información disponible para apoyar la toma
-de decisiones.
+La aplicación busca consultar indicadores educativos agregados y documentación
+institucional mediante lenguaje natural. Una respuesta útil debe mostrar los
+períodos comparados, el cálculo y su unidad, la fuente documental y las
+limitaciones de la información disponible.
 
 Un caso de uso previsto es preguntar cómo cambió la tasa de aprobación entre
 dos períodos y qué documento institucional define ese indicador. Una respuesta
 útil debería identificar los períodos comparados, mostrar los datos utilizados,
 indicar la fuente documental y reconocer si falta información para responder.
-Esta funcionalidad académica es una meta del proyecto final; este repositorio
-todavía no integra datos académicos ni documentos institucionales.
+El repositorio todavía no integra datos ni documentos institucionales reales.
+Los ejemplos académicos proporcionan contextos de prueba controlados.
 
 El Gate 1 entrega la base técnica verificable: configuración del entorno,
 consumo de la API, manejo de errores, separación de responsabilidades,
 procesamiento y validación de respuestas estructuradas, medición de uso y costo,
-y pruebas de consistencia de prompts. Los ejemplos sobre El Niño en Chile
-permiten comprobar esas capacidades con un tema acotado. Su resultado no
-demuestra todavía la exactitud de una respuesta académica ni la trazabilidad de
-sus fuentes.
+y pruebas de consistencia de prompts. Estos componentes se reutilizan ahora con
+ejemplos académicos ficticios. La prueba de formato no demuestra todavía la
+exactitud de una respuesta ni la trazabilidad de sus fuentes.
 
-En las siguientes etapas se prevé incorporar fuentes académicas autorizadas,
-adaptar los prompts y validar las respuestas frente a esos datos y documentos.
+En las siguientes etapas se prevé incorporar fuentes académicas autorizadas y
+validar las respuestas frente a esos datos y documentos.
 La solución final deberá reunir estas capacidades en un flujo utilizable y
 evaluar tanto su funcionamiento como la calidad de las respuestas. La base de
 consumo y validación construida en este Gate se conserva para esa evolución.
@@ -68,9 +63,10 @@ consumo y validación construida en este Gate se conserva para esa evolución.
 | --- | --- |
 | `src/consumir_gemini.py` | Cliente REST, validación de respuestas y cálculo de costo. |
 | `src/url_rota.py` | Ejercicio previo de manejo de errores de red. |
-| `prompts/banco.py` | Tres prompts con instrucciones, entradas de ejemplo y esquemas JSON. |
+| `prompts/banco.py` | Tres prompts académicos con entradas ficticias y esquemas JSON. |
 | `prompts/test_consistencia.py` | Ejecución repetida del banco contra Gemini. |
-| `prompts/registro_resultados.json` | Último registro generado por la prueba. |
+| `prompts/registro_resultados_gate1.json` | Registro histórico de una versión anterior del banco; no corresponde a los prompts actuales. |
+| `prompts/registro_resultados.json` | Registro del banco actual, generado al ejecutar su prueba de consistencia. |
 | `cliente_gemini/` | Cliente modular del Módulo 2: configuración, transporte, reintentos, respuestas y costos. |
 | `tests/` | Pruebas unitarias del cliente modular, sin red ni credencial real. |
 | `ejemplo_academico_mock.py` | Ejemplo académico con datos y respuesta simulados. |
@@ -80,6 +76,7 @@ consumo y validación construida en este Gate se conserva para esa evolución.
 | `evaluaciones/unidad_2_2/` | Respuestas, métricas y revisión manual de la Unidad 2.2. |
 | `docs/` | Diagrama y decisión de arquitectura del Gate 1, diseño del cliente modular y registros de verificación. |
 | `requirements.txt` | Dependencias del entorno Python. |
+| `orquestacion_academica.py` y `ejemplo_langchain_academico.py` | Flujo académico LCEL de la Unidad 2.3 y demostración local o con Gemini. |
 | `.env.example` | Plantilla de configuración sin credenciales reales. |
 
 ## Instalación desde el repositorio
@@ -115,15 +112,16 @@ API de Gemini. El proyecto se verificó con Python 3.14.6. En PowerShell:
 
 ## Ejecución
 
-Para ejecutar una consulta y mostrar su costo estimado:
+Para ejecutar una consulta académica ficticia y mostrar su costo estimado:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.consumir_gemini
 ```
 
 Una ejecución correcta muestra la respuesta de Gemini, la latencia y el costo
-estimado. Si la consulta falla, el programa termina con código de salida distinto
-de cero y muestra el motivo.
+estimado. El ejemplo aporta explícitamente cifras y fuente ficticias; Gemini no
+consulta una base institucional. Si la consulta falla, el programa termina con
+código de salida distinto de cero y muestra el motivo.
 
 Para ejecutar el banco de prompts:
 
@@ -131,12 +129,12 @@ Para ejecutar el banco de prompts:
 .\.venv\Scripts\python.exe -m prompts.test_consistencia
 ```
 
-La prueba realiza nueve llamadas reales en total y sobrescribe
+La prueba realiza nueve llamadas reales en total y crea o sobrescribe
 `prompts/registro_resultados.json` con la fecha, el modelo, los éxitos y los
-motivos de los fallos. La ejecución consume cuota de la API. El registro actual
-muestra **3/3 respuestas estructuralmente válidas por prompt** con
-`gemini-3.5-flash-lite`. Esta medición comprueba el formato y el esquema JSON;
-no certifica la exactitud científica del contenido generado.
+motivos de los fallos. Consume cuota de la API. **El banco académico aún no se ha
+ejecutado contra Gemini**; el registro histórico de una versión anterior se
+conserva por separado. La prueba comprueba formato y esquema JSON, no la
+exactitud de cifras o definiciones.
 
 ## Módulo 2: cliente modular y ejemplo académico
 
@@ -182,12 +180,10 @@ se indica arriba y ejecuta, según el alcance que quieras comprobar:
 .\.venv\Scripts\python.exe ejecutar_banco_modulo2.py
 ```
 
-El último comando hace tres llamadas reales, una por cada prompt del banco
-existente en `prompts/banco.py`, consume cuota y no modifica
-`prompts/registro_resultados.json`. El Gate 1 sigue en evaluación; sus archivos
-en `src/` y `prompts/` no se sustituyeron. La prueba con un 429 real y su registro
-continúan pendientes; las pruebas actuales verifican el reintento con respuestas
-429 simuladas.
+El último comando hace tres llamadas reales, una por cada prompt académico de
+`prompts/banco.py`, consume cuota y no modifica
+`prompts/registro_resultados.json`. Las pruebas actuales verifican el reintento
+con respuestas 429 simuladas; la prueba con un 429 real continúa pendiente.
 
 ### Unidad 2.2: evaluación de respuestas académicas
 
@@ -231,6 +227,49 @@ deberán verificarse contra datos autorizados cuando se integre el proyecto fina
 Las pruebas de este pipeline y las métricas se incluyen en el mismo comando de
 `pytest` mostrado arriba; no necesitan API ni credenciales.
 
+### Unidad 2.3: orquestación académica con LangChain
+
+El flujo en `orquestacion_academica.py` adapta las piezas de las lecciones al
+asistente previsto. Una plantilla clasifica la pregunta como **indicador**,
+**definición** o **sin datos**. `RunnableBranch` selecciona la ruta. En las dos
+rutas académicas, cuatro pasos encadenados extraen evidencia del contexto,
+analizan los datos o la definición, redactan una respuesta y revisan el borrador
+contra el texto original. La salida de cada
+paso alimenta al siguiente mediante `RunnablePassthrough.assign`. Una categoría
+imprevista produce la respuesta de información insuficiente. Cada ruta tiene un
+fallback con registro de error; un fallo anterior al enrutamiento se maneja en
+`procesar_consulta`.
+
+Para observarlo sin clave ni llamadas a la API:
+
+```powershell
+.\.venv\Scripts\python.exe ejemplo_langchain_academico.py
+```
+
+El ejemplo usa la ficha **ficticia** de aprobación de 2024 y 2025 y un modelo
+simulado con respuestas fijas. Para ejecutar el mismo flujo con Gemini, una vez
+configurada `.env`:
+
+```powershell
+.\.venv\Scripts\python.exe ejemplo_langchain_academico.py --real
+```
+
+La opción `--real` consume cuota: la clasificación más los cuatro pasos de la ruta
+elegida hacen normalmente cinco llamadas. Usa `GEMINI_MODEL` y `GEMINI_API_KEY`
+de `.env`. Esta integración LangChain es una vía de orquestación separada del
+cliente REST del Módulo 2: todavía no contabiliza tokens ni costos. Sus prompts
+solo restringen al modelo al contexto proporcionado; no verifican que las
+afirmaciones finales coincidan con una fuente autorizada. El proyecto aún necesita
+conectar documentos e indicadores reales autorizados, validar cifras y citas de
+forma programática y evaluar respuestas antes de usarlas para decisiones.
+
+La [captura de la prueba de ejecución](docs/prueba_langchain.png) muestra la
+salida del ejemplo local, las pruebas automatizadas y una consulta con Gemini.
+
+Las pruebas de `tests/test_orquestacion_academica.py` cubren normalización,
+enrutamiento, orden de los cuatro pasos, falta de datos y fallos de ruta y
+clasificación. Se ejecutan con el comando `pytest` anterior, sin red.
+
 ## Historial de avances
 
 Los siguientes hitos proceden de los commits existentes. Desde el cierre
@@ -238,23 +277,23 @@ técnico del Gate 1, los avances se presentan como parte del Módulo 2:
 
 | Etapa | Fecha | Avance | Commits |
 | --- | --- | --- | --- |
-| Módulo 1 · Gate 1 | 2026-10-09 | Creación de la estructura inicial, plantilla de entorno y reglas de exclusión. | `98ce847` |
-| Módulo 1 · Gate 1 | 2026-10-11 | Configuración de dependencias y respaldo de la prueba en Postman. | `174ef9d`, `92464a2`, `7229804` |
-| Módulo 1 · Gate 1 | 2026-10-12 | Primera versión del consumo del servicio y ejercicio de error de red. | `377bf63` |
-| Módulo 1 · Gate 1 | 2026-10-16 | Refactorización del cliente, manejo de excepciones y comentarios sobre responsabilidades. | `7251cd2`, `34b9054` |
-| Módulo 1 · Gate 1 | 2026-10-19 | Incorporación del diagrama de arquitectura. | `9419341` |
-| Módulo 1 · Gate 1 | 2026-10-20 | Medición de tokens y costo, actualización del diagrama y documentación de la elección del modelo. | `75d9cef`, `4f7d490` |
-| Módulo 1 · Gate 1 | 2026-10-23 | Banco de prompts sobre El Niño en Chile, validación JSON y prueba de consistencia. | `a6fcc4d` |
+| Módulo 1 · Core | 2026-10-09 | Creación de la estructura inicial, plantilla de entorno y reglas de exclusión. | `98ce847` |
+| Módulo 1 · Core | 2026-10-11 | Configuración de dependencias y respaldo de la prueba en Postman. | `174ef9d`, `92464a2`, `7229804` |
+| Módulo 1 · Core | 2026-10-12 | Primera versión del consumo del servicio y ejercicio de error de red. | `377bf63` |
+| Módulo 1 · Core | 2026-10-16 | Refactorización del cliente, manejo de excepciones y comentarios sobre responsabilidades. | `7251cd2`, `34b9054` |
+| Módulo 1 · Core | 2026-10-19 | Incorporación del diagrama de arquitectura. | `9419341` |
+| Módulo 1 · Core | 2026-10-20 | Medición de tokens y costo, actualización del diagrama y documentación de la elección del modelo. | `75d9cef`, `4f7d490` |
+| Módulo 1 · Core | 2026-10-23 | Primer banco de prompts, validación JSON y prueba de consistencia. El banco vigente se adaptó después al caso académico. | `a6fcc4d` |
 | Módulo 1 · Gate 1 | 2026-10-23 | Verificación técnica, dependencias reproducibles y documentación de instalación y ejecución. | `666f827`, `80b7cae`, `b13e9be`, `ec7d86e`, `8ec48e9` |
-| Módulo 2 | 2026-10-30 | Vinculación de la base del Gate 1 con la visión del asistente académico. | `8446984` |
-| Módulo 2 | 2026-10-30 | Integración del cliente modular, pruebas unitarias y ejemplo académico simulado. | `89af54b` |
-| Módulo 2 | 2026-10-30 | Actualización del historial del README para distinguir el Gate 1 de los avances del Módulo 2. | `48f021b` |
-| Módulo 2 | 2026-10-30 | Evaluación de 20 respuestas académicas con métricas, pruebas y revisión manual documentada. | `f66ea30` |
+| Módulo 2 · Core | 2026-10-30 | Vinculación de la base del Gate 1 con la visión del asistente académico. | `8446984` |
+| Módulo 2 · Core | 2026-10-30 | Integración del cliente modular, pruebas unitarias y ejemplo académico simulado. | `89af54b` |
+| Módulo 2 · Core | 2026-10-30 | Actualización del historial del README para distinguir el Gate 1 de los avances del Módulo 2. | `48f021b` |
+| Módulo 2 · Core| 2026-10-30 | Evaluación de 20 respuestas académicas con métricas, pruebas y revisión manual documentada. | `f66ea30` |
 
 ## Alcance de los resultados
 
-Las tendencias climáticas no describen necesariamente lo que ocurrirá en una
-región o fecha concretas. Para información meteorológica vigente, consulta los
-boletines de la Dirección Meteorológica de Chile. Los costos mostrados por el
-prototipo son estimaciones basadas en los tokens reportados por la API, no cargos
-facturados.
+Todas las cifras y fuentes académicas del repositorio son ficticias. Antes de
+usar respuestas para apoyar decisiones reales se necesitan fuentes autorizadas,
+control de acceso, verificación programática de datos y citas, y evaluación con
+casos institucionales. Los costos mostrados son estimaciones basadas en los
+tokens reportados por la API, no cargos facturados.

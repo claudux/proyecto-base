@@ -14,7 +14,7 @@ def test_consulta_normal_registra_una_sola_operacion(configuracion, respuesta_va
     transporte.enviar_peticion.return_value = respuesta_valida
     cliente = ClienteGemini(configuracion, transporte=transporte)
 
-    assert cliente.consultar_modelo("¿Qué es El Niño?") == "Respuesta simulada"
+    assert cliente.consultar_modelo("¿Qué es la tasa de aprobación?") == "Respuesta simulada"
     assert len(cliente.registro_costos.operaciones) == 1
     assert cliente.registro_costos.costo_total_sesion == pytest.approx(0.00105)
     transporte.enviar_peticion.assert_called_once()

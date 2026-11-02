@@ -2,10 +2,10 @@
 
 ## Objetivo
 
-Ofrecer una sola operación de consulta reutilizable. El banco de prompts sobre
-El Niño en Chile permite comprobar la continuidad con el Gate 1; un ejemplo
-académico con datos y respuesta simulados muestra el uso previsto en el proyecto
-final. El cliente debe tolerar fallos temporales, detenerse ante errores
+Ofrecer una sola operación de consulta reutilizable. El banco de prompts se
+adaptó a indicadores y definiciones académicas ficticias; un ejemplo con datos
+y respuesta simulados muestra el uso previsto en el proyecto final. El cliente
+debe tolerar fallos temporales, detenerse ante errores
 permanentes, medir el costo estimado y conservar la validación de respuestas JSON.
 
 ## Flujo

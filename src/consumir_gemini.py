@@ -213,7 +213,11 @@ def obtener_dato_de_prueba(pregunta):
 
 # Ejemplo manual: la prueba de consistencia está en prompts/test_consistencia.py.
 if __name__ == "__main__":
-    pregunta = "¿Qué es El Niño? Responde en dos oraciones."
+    pregunta = (
+        "Con datos ficticios, ¿cuántos puntos porcentuales cambió la tasa "
+        "de aprobación de 68 % en 2024 a 74 % en 2025? "
+        "Fuente: Ficha académica ficticia A. Indica la fuente en la respuesta."
+    )
     try:
         url, body, api_key = armar_peticion(pregunta)
         inicio = time.perf_counter()
