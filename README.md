@@ -2,9 +2,10 @@
 
 Prototipo Python para consultar indicadores educativos agregados y definiciones
 académicas en lenguaje natural. Usa Gemini mediante un cliente REST modular y
-LangChain para orquestar consultas. Los datos, documentos y fuentes incluidos en
-el repositorio son **ficticios**: permiten probar el software, pero no representan
-a una institución real ni deben usarse para decisiones académicas.
+LangChain para orquestar consultas y ejecutar un agente con herramientas. Los
+datos, documentos y fuentes incluidos en el repositorio son **ficticios**:
+permiten probar el software, pero no representan a una institución real ni
+deben usarse para decisiones académicas.
 
 El objetivo del proyecto es responder preguntas como «¿cómo cambió la tasa de
 aprobación entre dos períodos?» y «¿qué documento define ese indicador?», con
@@ -24,11 +25,44 @@ autorizadas y su verificación automática siguen pendientes.
   un dato y evaluar si una afirmación está respaldada por el contexto.
 - Clasifica y enruta preguntas académicas mediante LangChain; cada ruta combina
   extracción, análisis, redacción y revisión, con manejo de fallos.
+- Permite que un agente elija entre cuatro herramientas académicas, conserve
+  memoria por sesión y registre las acciones que ejecutó antes de responder.
 
 El modelo predeterminado es `gemini-3.5-flash-lite`, según la
 [decisión de arquitectura](docs/decision-arquitectura.md). La variable
 `GEMINI_MODEL` permite elegir otro modelo; si se cambia, también deben revisarse
 las tarifas usadas en el cálculo de costo.
+
+## Estado actual y guía de la Unidad 2.4
+
+La etapa actual implementa un agente académico sobre un catálogo local y
+**ficticio**. La práctica de la sesión 3 queda respaldada por tres consultas
+ejecutadas con Gemini: dos usan herramientas diferentes por separado y una
+combina dos herramientas. La elección se comprueba en `intermediate_steps` y
+queda registrada en las trazas. El agente también tiene memoria entre turnos de
+una misma sesión y un límite explícito de iteraciones.
+
+Estos son los documentos y archivos principales de la entrega, con sus rutas
+desde la raíz del repositorio:
+
+| Ruta | Qué consultar allí |
+| --- | --- |
+| [`docs/agente-unidad-2-4.md`](docs/agente-unidad-2-4.md) | Diseño del agente, contratos de las cuatro herramientas, práctica de la sesión 3, memoria, comandos y límites técnicos. |
+| [`docs/limites-autonomia-agente.md`](docs/limites-autonomia-agente.md) | Riesgo de cada herramienta, supervisión humana, revisión de trazas y respuesta ante fallos. |
+| [`evaluaciones/unidad_2_4/trazas_gemini.jsonl`](evaluaciones/unidad_2_4/trazas_gemini.jsonl) | Evidencia de las tres consultas con Gemini: entrada, herramientas elegidas, argumentos, observaciones y respuesta. |
+| [`evaluaciones/unidad_2_4/trazas_simulado.jsonl`](evaluaciones/unidad_2_4/trazas_simulado.jsonl) | Evidencia equivalente del modelo determinista usado para la demostración local. |
+| [`tests/test_agente_academico.py`](tests/test_agente_academico.py) | Pruebas sin red de herramientas, cálculo, validación, memoria, aislamiento de sesiones y trazas. |
+| [`README.md`](README.md) | Instalación, ejecución, estructura y estado general del proyecto. |
+
+El código de esta etapa se encuentra en
+[`datos_agente_academico.py`](datos_agente_academico.py),
+[`herramientas_academicas.py`](herramientas_academicas.py),
+[`agente_academico.py`](agente_academico.py),
+[`modelo_agente_simulado.py`](modelo_agente_simulado.py) y
+[`ejemplo_agente_academico.py`](ejemplo_agente_academico.py). El primero define
+los datos ficticios; el segundo, las herramientas; el tercero, el ejecutor, la
+memoria y el registro. Los dos últimos permiten una demostración local o con
+Gemini.
 
 ## Objetivo y alcance actual
 
@@ -68,21 +102,27 @@ consumo y validación construida en este Gate se conserva para esa evolución.
 | `prompts/registro_resultados_gate1.json` | Registro histórico de una versión anterior del banco; no corresponde a los prompts actuales. |
 | `prompts/registro_resultados.json` | Registro del banco actual, generado al ejecutar su prueba de consistencia. |
 | `cliente_gemini/` | Cliente modular del Módulo 2: configuración, transporte, reintentos, respuestas y costos. |
-| `tests/` | Pruebas unitarias del cliente modular, sin red ni credencial real. |
+| `tests/` | Pruebas automatizadas del cliente, pipeline, orquestación y agente; no necesitan red ni credencial real. |
 | `ejemplo_academico_mock.py` | Ejemplo académico con datos y respuesta simulados. |
 | `ejemplo_cliente_modulo2.py`, `ejemplo_banco_modulo2.py` y `ejecutar_banco_modulo2.py` | Ejemplos de consulta real mediante el cliente modular. |
 | `pipeline_texto.py` y `metricas_texto.py` | Normalización y métricas léxicas de la Unidad 2.2. |
 | `casos_academicos.py` y `evaluar_unidad_2_2.py` | Veinte casos ficticios, consultas reales y registro reanudable de resultados. |
 | `evaluaciones/unidad_2_2/` | Respuestas, métricas y revisión manual de la Unidad 2.2. |
-| `docs/` | Diagrama y decisión de arquitectura del Gate 1, diseño del cliente modular y registros de verificación. |
+| `docs/` | Arquitectura, diseño, verificaciones y límites de cada etapa; los documentos de la Unidad 2.4 se detallan en la guía anterior. |
 | `requirements.txt` | Dependencias del entorno Python. |
 | `orquestacion_academica.py` y `ejemplo_langchain_academico.py` | Flujo académico LCEL de la Unidad 2.3 y demostración local o con Gemini. |
+| `datos_agente_academico.py`, `herramientas_academicas.py` y `agente_academico.py` | Catálogo ficticio, cuatro herramientas y agente de la Unidad 2.4. |
+| `modelo_agente_simulado.py` y `ejemplo_agente_academico.py` | Demostración del agente sin red o con Gemini, con traza de acciones. |
+| `docs/agente-unidad-2-4.md` y `docs/limites-autonomia-agente.md` | Diseño, evidencia de la sesión 3 y límites de autonomía. |
+| `evaluaciones/unidad_2_4/` | Trazas separadas de la ejecución con Gemini y la demostración simulada. |
 | `.env.example` | Plantilla de configuración sin credenciales reales. |
 
 ## Instalación desde el repositorio
 
 Necesitas Git y Python; para las consultas reales también necesitas una clave de
-API de Gemini. El proyecto se verificó con Python 3.14.6. En PowerShell:
+API de Gemini. El proyecto se verificó con Python 3.14.6. Las dependencias de
+`requirements.txt` incluyen `langchain-classic`, necesario para
+`AgentExecutor` y `create_tool_calling_agent` en esta etapa. En PowerShell:
 
 1. Clona el repositorio y entra en su carpeta:
 
@@ -269,6 +309,62 @@ salida del ejemplo local, las pruebas automatizadas y una consulta con Gemini.
 Las pruebas de `tests/test_orquestacion_academica.py` cubren normalización,
 enrutamiento, orden de los cuatro pasos, falta de datos y fallos de ruta y
 clasificación. Se ejecutan con el comando `pytest` anterior, sin red.
+
+### Unidad 2.4: agente académico con herramientas
+
+El catálogo ficticio de `datos_agente_academico.py` define aprobación,
+asistencia y retención para 2024 y 2025, con definiciones y fuentes identificadas.
+`herramientas_academicas.py` expone cuatro herramientas con funciones distintas:
+
+| Herramienta | Pregunta que resuelve |
+| --- | --- |
+| `consultar_indicador` | Cifras y períodos disponibles. |
+| `consultar_definicion` | Significado y exclusiones de un indicador. |
+| `calcular_variacion` | Diferencia entre dos tasas, en puntos porcentuales. |
+| `consultar_fuente` | Identificación y alcance de una fuente ficticia. |
+
+`agente_academico.py` construye el agente con `create_tool_calling_agent` y
+`AgentExecutor`, conserva el historial por `session_id`, limita el ciclo a seis
+iteraciones y registra las acciones de `intermediate_steps` en JSONL. El modelo
+simulado de `modelo_agente_simulado.py` permite comprobar el flujo sin red. La
+descripción de cada componente y el contrato de las herramientas están en
+[`docs/agente-unidad-2-4.md`](docs/agente-unidad-2-4.md).
+
+La práctica de la sesión 3 pide al menos dos herramientas propias y dos
+invocaciones reales verificadas mediante `intermediate_steps`. Se realizaron
+tres consultas con Gemini: la primera eligió `consultar_indicador`, la segunda
+`consultar_definicion` y la tercera usó `calcular_variacion` seguido de
+`consultar_fuente`. La evidencia está en
+[`trazas_gemini.jsonl`](evaluaciones/unidad_2_4/trazas_gemini.jsonl).
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py
+```
+
+Este comando no requiere clave ni red. Escribe su evidencia en
+[`trazas_simulado.jsonl`](evaluaciones/unidad_2_4/trazas_simulado.jsonl). Para
+repetir las tres consultas con Gemini y consumir cuota de la API:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py --real
+```
+
+Cada ejecución agrega tres registros al archivo JSONL correspondiente. El
+modelo simulado sigue reglas programadas; solo la traza real muestra la
+selección hecha por Gemini en una ejecución concreta. Las pruebas del agente
+están en [`tests/test_agente_academico.py`](tests/test_agente_academico.py) y
+se incluyen en el comando general de `pytest`. En la verificación de esta
+entrega pasaron **44 pruebas** sin llamadas a la API.
+
+El [documento de límites de autonomía](docs/limites-autonomia-agente.md)
+clasifica las cuatro herramientas como operaciones de solo lectura o cálculo,
+define la revisión de trazas y un procedimiento ante respuestas inesperadas.
+Las herramientas actuales no realizan escrituras ni acciones institucionales.
+El historial se pierde al reiniciar el proceso; además, las clases de memoria
+usadas para esta práctica emiten avisos de obsolescencia en la versión instalada
+de LangChain. El agente aún no incorpora RAG, no verifica respuestas contra
+fuentes autorizadas y no contabiliza costos mediante el cliente REST del
+Módulo 2. Estos límites están desarrollados en los dos documentos de esta etapa.
 
 ## Historial de avances
 
