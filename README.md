@@ -386,6 +386,7 @@ técnico del Gate 1, los avances se presentan como parte del Módulo 2:
 | Módulo 2 · Core | 2026-10-30 | Actualización del historial del README para distinguir el Gate 1 de los avances del Módulo 2. | `48f021b`, `a59220f` |
 | Módulo 2 · Core | 2026-10-30 | Evaluación de 20 respuestas académicas con métricas, pruebas y revisión manual documentada. | `f66ea30` |
 | Módulo 2 · Unidad 2.3 | 2026-11-02 | Orquestación académica con LangChain, adaptación del banco de prompts, pruebas y captura de ejecución. | `d87634f` |
+| Módulo 2 · Unidad 2.4 | 2026-11-08 | Agente académico con cuatro herramientas, memoria por sesión, trazas de Gemini, pruebas y documentación de autonomía; actualización del README. | `67f855a` |
 
 ## Alcance de los resultados
 
