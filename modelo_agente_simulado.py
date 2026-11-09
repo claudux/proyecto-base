@@ -32,7 +32,17 @@ class ModeloAgenteSimulado(BaseChatModel):
                 nombre, args = "calcular_variacion", {
                     "indicador": "aprobación", "periodo_inicial": 2024, "periodo_final": 2025
                 }
-            elif "tasa de aprobación" in pregunta_normalizada:
+            elif "retención" in pregunta_normalizada:
+                periodo_anterior = next(
+                    (int(año) for anterior in reversed(preguntas[:-1])
+                     for año in ("2025", "2024") if año in anterior),
+                    None,
+                )
+                args = {"indicador": "retención"}
+                if periodo_anterior is not None:
+                    args["periodo"] = periodo_anterior
+                nombre = "consultar_indicador"
+            elif "aprobación" in pregunta_normalizada:
                 periodo = 2024 if "2024" in pregunta_normalizada else 2025
                 nombre, args = "consultar_indicador", {"indicador": "aprobación", "periodo": periodo}
             elif "y en 2024" in pregunta_normalizada and any(

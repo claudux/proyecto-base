@@ -73,20 +73,54 @@ de herramientas por Gemini. Para ejecutar las tres preguntas con Gemini, con
 .\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py --real
 ```
 
-Cada ejecución agrega tres registros al archivo JSONL correspondiente. La
+En el modo predeterminado, cada ejecución agrega tres registros al archivo JSONL
+correspondiente. La
 consola muestra el contenido de `intermediate_steps` como
 `herramienta(argumentos) -> observación`; no muestra el razonamiento privado del
 modelo. Los archivos `trazas_simulado.jsonl` y `trazas_gemini.jsonl` separan
 claramente ambos tipos de evidencia.
 
+### Comprobación de memoria entre dos preguntas
+
+La demostración de memoria usa una sola sesión para estas preguntas:
+
+1. «¿Cómo estuvo la aprobación del año 2025?»
+2. «¿Y la retención?»
+
+La segunda pregunta cambia de indicador y omite el año. En la ejecución con
+Gemini del 9 de noviembre de 2026, el agente consultó aprobación con
+`periodo=2025` en el primer turno y retención con `periodo=2025` en el segundo.
+Respondió 74 % y 92 %, respectivamente. Ambas entradas y sus acciones están en
+[`trazas_memoria_gemini.jsonl`](../evaluaciones/unidad_2_4/trazas_memoria_gemini.jsonl).
+La demostración local equivalente se guarda en
+[`trazas_memoria_simulado.jsonl`](../evaluaciones/unidad_2_4/trazas_memoria_simulado.jsonl).
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py --memoria
+.\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py --memoria --real
+```
+
+El segundo comando consume cuota. Sin `--memoria`, las tres consultas originales
+siguen usando sesiones independientes y sus trazas separadas. La prueba
+automatizada comprueba además que una sesión nueva no recibe el año de otra.
+
 ## Memoria y registro
 
-`AgenteAcademico.consultar(pregunta, session_id)` pasa el historial de esa sesión
-al prompt antes de la pregunta actual. El `agent_scratchpad` conserva las
-acciones del turno en curso; `chat_history` conserva preguntas y respuestas de
-turnos previos. Las sesiones se aíslan por identificador y `cerrar_sesion`
-descarta un historial. La memoria vive en el proceso: un reinicio la elimina y
-una conversación larga aumenta los tokens enviados en llamadas sucesivas.
+`AgenteAcademico.consultar(pregunta, session_id)` obtiene el historial de esa
+sesión y pasa una copia de sus mensajes a `chat_history` antes de invocar el
+ejecutor. Al terminar, añade `HumanMessage` con la pregunta y `AIMessage` con la
+respuesta final. Así, antes del segundo turno hay dos mensajes previos; después,
+hay cuatro. El `agent_scratchpad` conserva las acciones del turno en curso y no
+se incorpora al historial entre turnos. Las sesiones se aíslan por identificador
+y `cerrar_sesion` descarta un historial.
+
+La lección muestra este patrón mediante `RunnableWithMessageHistory` e
+`InMemoryChatMessageHistory`. Esta implementación realiza el mismo paso de
+lectura, inyección y guardado de forma explícita, con `HistorialSesion`, evitando
+depender de esas clases marcadas como obsoletas en la versión instalada. La
+memoria vive en el proceso: un reinicio la elimina y una conversación larga
+aumenta los tokens enviados en llamadas sucesivas. El año recordado es contexto
+conversacional; el valor de retención se consultó de nuevo en el catálogo.
 
 Tras cada interacción completada, el agente puede añadir una línea JSON UTF-8
 con fecha UTC, sesión, entrada, acciones y respuesta. El texto final se extrae
@@ -109,10 +143,8 @@ puede omitir una herramienta o redactar una conclusión incompatible con su
 observación. El agente aún no integra RAG, control de acceso ni verificación
 automática contra documentos autorizados.
 
-`RunnableWithMessageHistory` e `InMemoryChatMessageHistory` muestran avisos de
-obsolescencia en las versiones instaladas de LangChain. Se usan aquí para
-completar la práctica sobre `AgentExecutor`; antes de una versión de producción
-se deberá migrar la persistencia conversacional a una API vigente y probar de
-nuevo el aislamiento de sesiones. El cliente LangChain de este ejemplo tampoco
-usa el registro de costos del cliente REST del Módulo 2. El número de llamadas
-varía según las herramientas que el modelo elija.
+El historial se guarda como mensajes en memoria por sesión y se pasa al prompt
+de `AgentExecutor` en cada consulta. Antes de una versión de producción se deberá
+añadir persistencia y probar de nuevo el aislamiento de sesiones. El cliente
+LangChain de este ejemplo tampoco usa el registro de costos del cliente REST del
+Módulo 2. El número de llamadas varía según las herramientas que el modelo elija.

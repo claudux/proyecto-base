@@ -93,6 +93,21 @@ def test_memoria_resuelve_referencia_en_misma_sesion_sin_mezclar_otra():
     assert len(agente.obtener_historial("b").messages) == 2
 
 
+def test_memoria_conserva_periodo_al_cambiar_de_indicador():
+    agente = AgenteAcademico(ModeloAgenteSimulado())
+    agente.consultar("¿Cómo estuvo la aprobación del año 2025?", "misma")
+    seguimiento = agente.consultar("¿Y la retención?", "misma")
+    sin_contexto = agente.consultar("¿Y la retención?", "nueva")
+
+    accion = seguimiento["intermediate_steps"][0][0]
+    assert accion.tool == "consultar_indicador"
+    assert accion.tool_input == {"indicador": "retención", "periodo": 2025}
+    assert "92 %" in seguimiento["output"]
+    assert [type(m).__name__ for m in seguimiento["chat_history"]] == ["HumanMessage", "AIMessage"]
+    assert sin_contexto["intermediate_steps"][0][0].tool_input == {"indicador": "retención"}
+    assert len(agente.obtener_historial("misma").messages) == 4
+
+
 def test_salida_de_gemini_conserva_texto_sin_metadatos():
     bloques = [{"type": "text", "text": "Respuesta académica", "extras": {"signature": "interno"}}]
     assert _texto_respuesta(bloques) == "Respuesta académica"

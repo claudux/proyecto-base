@@ -51,6 +51,8 @@ desde la raíz del repositorio:
 | [`docs/limites-autonomia-agente.md`](docs/limites-autonomia-agente.md) | Riesgo de cada herramienta, supervisión humana, revisión de trazas y respuesta ante fallos. |
 | [`evaluaciones/unidad_2_4/trazas_gemini.jsonl`](evaluaciones/unidad_2_4/trazas_gemini.jsonl) | Evidencia de las tres consultas con Gemini: entrada, herramientas elegidas, argumentos, observaciones y respuesta. |
 | [`evaluaciones/unidad_2_4/trazas_simulado.jsonl`](evaluaciones/unidad_2_4/trazas_simulado.jsonl) | Evidencia equivalente del modelo determinista usado para la demostración local. |
+| [`evaluaciones/unidad_2_4/trazas_memoria_gemini.jsonl`](evaluaciones/unidad_2_4/trazas_memoria_gemini.jsonl) | Dos preguntas en una misma sesión: aprobación de 2025 y seguimiento sobre retención. |
+| [`evaluaciones/unidad_2_4/trazas_memoria_simulado.jsonl`](evaluaciones/unidad_2_4/trazas_memoria_simulado.jsonl) | Reproducción local del caso de memoria, sin consumir la API. |
 | [`tests/test_agente_academico.py`](tests/test_agente_academico.py) | Pruebas sin red de herramientas, cálculo, validación, memoria, aislamiento de sesiones y trazas. |
 | [`README.md`](README.md) | Instalación, ejecución, estructura y estado general del proyecto. |
 
@@ -330,6 +332,14 @@ simulado de `modelo_agente_simulado.py` permite comprobar el flujo sin red. La
 descripción de cada componente y el contrato de las herramientas están en
 [`docs/agente-unidad-2-4.md`](docs/agente-unidad-2-4.md).
 
+La prueba de memoria usa una misma sesión para «¿Cómo estuvo la aprobación del
+año 2025?» y «¿Y la retención?». En la segunda consulta, Gemini invocó
+`consultar_indicador` para retención con `periodo=2025` y respondió **92 %**.
+La [traza de memoria con Gemini](evaluaciones/unidad_2_4/trazas_memoria_gemini.jsonl)
+conserva ambas acciones; la [traza simulada](evaluaciones/unidad_2_4/trazas_memoria_simulado.jsonl)
+permite reproducir el flujo sin red. El historial aporta el año, mientras que
+la cifra se consulta en el catálogo ficticio.
+
 La práctica de la sesión 3 pide al menos dos herramientas propias y dos
 invocaciones reales verificadas mediante `intermediate_steps`. Se realizaron
 tres consultas con Gemini: la primera eligió `consultar_indicador`, la segunda
@@ -349,20 +359,28 @@ repetir las tres consultas con Gemini y consumir cuota de la API:
 .\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py --real
 ```
 
-Cada ejecución agrega tres registros al archivo JSONL correspondiente. El
+Para ejecutar específicamente los dos turnos de la prueba de memoria, añade
+`--memoria` al comando local o al comando con `--real`:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py --memoria
+.\.venv\Scripts\python.exe -X utf8 ejemplo_agente_academico.py --memoria --real
+```
+
+En el modo predeterminado, cada ejecución agrega tres registros al archivo JSONL
+correspondiente; `--memoria` agrega dos. El
 modelo simulado sigue reglas programadas; solo la traza real muestra la
 selección hecha por Gemini en una ejecución concreta. Las pruebas del agente
 están en [`tests/test_agente_academico.py`](tests/test_agente_academico.py) y
 se incluyen en el comando general de `pytest`. En la verificación de esta
-entrega pasaron **44 pruebas** sin llamadas a la API.
+entrega pasaron **45 pruebas** sin llamadas a la API.
 
 El [documento de límites de autonomía](docs/limites-autonomia-agente.md)
 clasifica las cuatro herramientas como operaciones de solo lectura o cálculo,
 define la revisión de trazas y un procedimiento ante respuestas inesperadas.
 Las herramientas actuales no realizan escrituras ni acciones institucionales.
-El historial se pierde al reiniciar el proceso; además, las clases de memoria
-usadas para esta práctica emiten avisos de obsolescencia en la versión instalada
-de LangChain. El agente aún no incorpora RAG, no verifica respuestas contra
+El historial se pierde al reiniciar el proceso. El agente aún no incorpora RAG,
+no verifica respuestas contra
 fuentes autorizadas y no contabiliza costos mediante el cliente REST del
 Módulo 2. Estos límites están desarrollados en los dos documentos de esta etapa.
 
