@@ -526,17 +526,19 @@ La captura respalda la comparación de cuatro consultas reales; el detalle por
 pregunta queda en los registros JSONL. En esa muestra, la misma pregunta usó
 328 tokens de entrada con `k=2` y 448 con `k=3`.
 
-Para que un docente reproduzca esta sección desde GitHub deben estar **confirmados
-y publicados** el código `rag/`, los diez documentos del corpus, los casos de
-evaluación, los informes que se quieran mostrar, `requirements.txt`, este README
-y `docs/pruebas_RAG.png`. El clon no incluye `.env`, `.venv`, `rag/almacen/` ni
+La entrega de la Unidad 2.5 quedó publicada en `main` con el commit `d8f860e`:
+incluye el código `rag/`, los diez documentos del corpus, los casos e informes
+de evaluación, las dependencias, las pruebas, esta guía y
+`docs/pruebas_RAG.png`. El clon no incluye `.env`, `.venv`, `rag/almacen/` ni
 las carpetas `.rag-test-*`. Esas exclusiones son intencionales: el docente crea
-su entorno, configura su propia clave y genera su índice local.
+su entorno, configura su propia clave y genera su índice local siguiendo los
+pasos anteriores.
 
-## Historial de avances
+## Historial de versiones y avances
 
-Los siguientes hitos proceden de los commits existentes. Desde el cierre
-técnico del Gate 1, los avances se presentan como parte del Módulo 2:
+Los siguientes hitos proceden de los commits publicados. Desde el cierre
+técnico del Gate 1, los avances se presentan como parte del Módulo 2; los
+números de unidad identifican etapas del curso y no son etiquetas de Git:
 
 | Etapa | Fecha | Avance | Commits |
 | --- | --- | --- | --- |
@@ -554,6 +556,8 @@ técnico del Gate 1, los avances se presentan como parte del Módulo 2:
 | Módulo 2 · Core | 2026-10-30 | Evaluación de 20 respuestas académicas con métricas, pruebas y revisión manual documentada. | `f66ea30` |
 | Módulo 2 · Unidad 2.3 | 2026-11-02 | Orquestación académica con LangChain, adaptación del banco de prompts, pruebas y captura de ejecución. | `d87634f` |
 | Módulo 2 · Unidad 2.4 | 2026-11-08 | Agente académico con cuatro herramientas, memoria por sesión, trazas de Gemini, pruebas y documentación de autonomía; actualización del README. | `67f855a` |
+| Módulo 2 · Unidad 2.4 | 2026-11-09 | Ajuste del uso de memoria del agente entre sesiones y actualización de su evidencia. | `52f46e7` |
+| Módulo 2 · Unidad 2.5 | 2026-11-16 | RAG con diez documentos ficticios, Chroma persistente, citas, evaluación de 22 preguntas, registro de latencia y costo estimado, pruebas, guía y captura de respaldo. | `d8f860e` |
 
 ## Alcance de los resultados
 
