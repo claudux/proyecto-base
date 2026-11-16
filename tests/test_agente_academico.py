@@ -42,8 +42,8 @@ def test_esquema_rechaza_argumentos_invalidos():
         calcular_variacion.invoke({"indicador": "aprobación", "periodo_inicial": 2024})
 
 
-def test_agente_registra_seleccion_secuencia_y_sesiones_aisladas(tmp_path):
-    ruta = tmp_path / "trazas.jsonl"
+def test_agente_registra_seleccion_secuencia_y_sesiones_aisladas(carpeta_temporal):
+    ruta = carpeta_temporal / "trazas.jsonl"
     agente = AgenteAcademico(ModeloAgenteSimulado(), archivo_trazas=ruta)
 
     consultas = (

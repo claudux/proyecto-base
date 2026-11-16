@@ -8,6 +8,8 @@ env/
 
 # Cachés y compilados de Python
 __pycache__/
+.pytest_cache/
+/.rag-test-*/
 *.py[cod]
 *.egg-info/
 
@@ -22,3 +24,6 @@ Thumbs.db
 
 # Borrador local del módulo 2 mientras Gate 1 está en evaluación
 /modulo2_borrador/
+
+# Índice RAG regenerable; el corpus y las evaluaciones sí se versionan
+/rag/almacen/

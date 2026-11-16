@@ -1,0 +1,362 @@
+{
+  "timestamp_utc": "2026-11-10T11:43:21.512627+00:00",
+  "configuracion": {
+    "k": 2,
+    "tamano_chunk": 500,
+    "solapamiento": 50,
+    "modelo_embedding": "gemini-embedding-001"
+  },
+  "preguntas": 22,
+  "precision_promedio": 0.45454545454545453,
+  "recall_promedio": 1.0,
+  "casos": [
+    {
+      "pregunta": "¿Cuál fue la aprobación en 2024?",
+      "ids_relevantes": [
+        "01_aprobacion.md:0"
+      ],
+      "ids_recuperados": [
+        "01_aprobacion.md:0",
+        "02_asistencia.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 1158.69,
+        "busqueda": 1.87
+      }
+    },
+    {
+      "pregunta": "¿Se incluyen convalidaciones en la tasa de aprobación?",
+      "ids_relevantes": [
+        "01_aprobacion.md:0"
+      ],
+      "ids_recuperados": [
+        "01_aprobacion.md:0",
+        "02_asistencia.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 401.57,
+        "busqueda": 2.03
+      }
+    },
+    {
+      "pregunta": "¿Qué porcentaje de asistencia hubo en 2025?",
+      "ids_relevantes": [
+        "02_asistencia.md:0"
+      ],
+      "ids_recuperados": [
+        "02_asistencia.md:0",
+        "03_retencion.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 684.33,
+        "busqueda": 1.43
+      }
+    },
+    {
+      "pregunta": "¿Qué se usa como denominador para la asistencia?",
+      "ids_relevantes": [
+        "02_asistencia.md:0"
+      ],
+      "ids_recuperados": [
+        "02_asistencia.md:0",
+        "05_variaciones.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 1083.97,
+        "busqueda": 2.54
+      }
+    },
+    {
+      "pregunta": "¿Cuánto fue la retención en 2024?",
+      "ids_relevantes": [
+        "03_retencion.md:0"
+      ],
+      "ids_recuperados": [
+        "03_retencion.md:0",
+        "02_asistencia.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 372.27,
+        "busqueda": 1.18
+      }
+    },
+    {
+      "pregunta": "¿Qué significa que un estudiante sea retenido?",
+      "ids_relevantes": [
+        "03_retencion.md:0"
+      ],
+      "ids_recuperados": [
+        "03_retencion.md:0",
+        "01_aprobacion.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 386.72,
+        "busqueda": 1.39
+      }
+    },
+    {
+      "pregunta": "¿Qué código identifica la fuente de aprobación?",
+      "ids_relevantes": [
+        "04_fuentes.md:0"
+      ],
+      "ids_recuperados": [
+        "04_fuentes.md:0",
+        "01_aprobacion.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 383.99,
+        "busqueda": 1.26
+      }
+    },
+    {
+      "pregunta": "¿Las fichas citadas son institucionales y externas?",
+      "ids_relevantes": [
+        "04_fuentes.md:0"
+      ],
+      "ids_recuperados": [
+        "04_fuentes.md:0",
+        "10_limites.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 710.58,
+        "busqueda": 1.79
+      }
+    },
+    {
+      "pregunta": "¿En qué unidad se expresa la diferencia entre dos tasas?",
+      "ids_relevantes": [
+        "05_variaciones.md:0"
+      ],
+      "ids_recuperados": [
+        "05_variaciones.md:0",
+        "01_aprobacion.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 376.26,
+        "busqueda": 1.72
+      }
+    },
+    {
+      "pregunta": "¿Cómo se obtiene un cambio relativo?",
+      "ids_relevantes": [
+        "05_variaciones.md:0"
+      ],
+      "ids_recuperados": [
+        "05_variaciones.md:0",
+        "03_retencion.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 395.61,
+        "busqueda": 1.31
+      }
+    },
+    {
+      "pregunta": "¿El cliente reintenta errores de autenticación?",
+      "ids_relevantes": [
+        "06_cliente_gemini.md:0"
+      ],
+      "ids_recuperados": [
+        "06_cliente_gemini.md:0",
+        "04_fuentes.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 718.77,
+        "busqueda": 1.55
+      }
+    },
+    {
+      "pregunta": "¿Dónde debe guardarse la clave de Gemini?",
+      "ids_relevantes": [
+        "06_cliente_gemini.md:0"
+      ],
+      "ids_recuperados": [
+        "06_cliente_gemini.md:0",
+        "10_limites.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 424.13,
+        "busqueda": 3.04
+      }
+    },
+    {
+      "pregunta": "¿El costo estimado equivale a una factura?",
+      "ids_relevantes": [
+        "07_costos.md:0"
+      ],
+      "ids_recuperados": [
+        "07_costos.md:0",
+        "10_limites.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 835.43,
+        "busqueda": 1.71
+      }
+    },
+    {
+      "pregunta": "¿Se cuentan los tokens de razonamiento al estimar el costo?",
+      "ids_relevantes": [
+        "07_costos.md:0"
+      ],
+      "ids_recuperados": [
+        "07_costos.md:0",
+        "10_limites.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 423.27,
+        "busqueda": 1.86
+      }
+    },
+    {
+      "pregunta": "¿Qué herramientas puede usar el agente académico?",
+      "ids_relevantes": [
+        "08_agente.md:0"
+      ],
+      "ids_recuperados": [
+        "08_agente.md:0",
+        "09_evaluacion.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 393.24,
+        "busqueda": 1.69
+      }
+    },
+    {
+      "pregunta": "¿La memoria del agente sobrevive al cierre del proceso?",
+      "ids_relevantes": [
+        "08_agente.md:0"
+      ],
+      "ids_recuperados": [
+        "08_agente.md:0",
+        "06_cliente_gemini.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 855.3,
+        "busqueda": 2.58
+      }
+    },
+    {
+      "pregunta": "¿El F1 léxico demuestra exactitud factual?",
+      "ids_relevantes": [
+        "09_evaluacion.md:0"
+      ],
+      "ids_recuperados": [
+        "09_evaluacion.md:0",
+        "10_limites.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 403.12,
+        "busqueda": 1.66
+      }
+    },
+    {
+      "pregunta": "¿Qué es recall en recuperación RAG?",
+      "ids_relevantes": [
+        "09_evaluacion.md:0"
+      ],
+      "ids_recuperados": [
+        "09_evaluacion.md:0",
+        "08_agente.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 834.79,
+        "busqueda": 1.9
+      }
+    },
+    {
+      "pregunta": "¿Existen cifras institucionales reales en este corpus?",
+      "ids_relevantes": [
+        "10_limites.md:0"
+      ],
+      "ids_recuperados": [
+        "10_limites.md:0",
+        "04_fuentes.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 421.35,
+        "busqueda": 1.6
+      }
+    },
+    {
+      "pregunta": "¿Una cita válida prueba por sí sola que la frase es correcta?",
+      "ids_relevantes": [
+        "10_limites.md:0"
+      ],
+      "ids_recuperados": [
+        "10_limites.md:0",
+        "04_fuentes.md:0"
+      ],
+      "precision": 0.5,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 410.13,
+        "busqueda": 1.71
+      }
+    },
+    {
+      "pregunta": "¿Cuántos estudiantes se titularon en 2023?",
+      "ids_relevantes": [],
+      "ids_recuperados": [
+        "10_limites.md:0",
+        "03_retencion.md:0"
+      ],
+      "precision": 0.0,
+      "recall": null,
+      "tiempos_ms": {
+        "embedding_consulta": 844.56,
+        "busqueda": 1.18
+      }
+    },
+    {
+      "pregunta": "¿Quién es el rector de la institución?",
+      "ids_relevantes": [],
+      "ids_recuperados": [
+        "10_limites.md:0",
+        "04_fuentes.md:0"
+      ],
+      "precision": 0.0,
+      "recall": null,
+      "tiempos_ms": {
+        "embedding_consulta": 405.69,
+        "busqueda": 1.91
+      }
+    }
+  ]
+}

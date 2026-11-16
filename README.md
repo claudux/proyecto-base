@@ -27,15 +27,17 @@ autorizadas y su verificación automática siguen pendientes.
   extracción, análisis, redacción y revisión, con manejo de fallos.
 - Permite que un agente elija entre cuatro herramientas académicas, conserve
   memoria por sesión y registre las acciones que ejecutó antes de responder.
+- Indexa un corpus ficticio en Chroma, recupera fragmentos con embeddings de
+  Gemini, genera respuestas con citas y evalúa la recuperación.
 
 El modelo predeterminado es `gemini-3.5-flash-lite`, según la
 [decisión de arquitectura](docs/decision-arquitectura.md). La variable
 `GEMINI_MODEL` permite elegir otro modelo; si se cambia, también deben revisarse
 las tarifas usadas en el cálculo de costo.
 
-## Estado actual y guía de la Unidad 2.4
+## Guía de la Unidad 2.4
 
-La etapa actual implementa un agente académico sobre un catálogo local y
+La Unidad 2.4 implementó un agente académico sobre un catálogo local y
 **ficticio**. La práctica de la sesión 3 queda respaldada por tres consultas
 ejecutadas con Gemini: dos usan herramientas diferentes por separado y una
 combina dos herramientas. La elección se comprueba en `intermediate_steps` y
@@ -104,13 +106,15 @@ consumo y validación construida en este Gate se conserva para esa evolución.
 | `prompts/registro_resultados_gate1.json` | Registro histórico de una versión anterior del banco; no corresponde a los prompts actuales. |
 | `prompts/registro_resultados.json` | Registro del banco actual, generado al ejecutar su prueba de consistencia. |
 | `cliente_gemini/` | Cliente modular del Módulo 2: configuración, transporte, reintentos, respuestas y costos. |
-| `tests/` | Pruebas automatizadas del cliente, pipeline, orquestación y agente; no necesitan red ni credencial real. |
+| `tests/` | Pruebas automatizadas del cliente, pipeline, orquestación, agente y RAG; no necesitan red ni credencial real. |
+| `rag/` | Corpus ficticio, índice persistente y comandos de consulta y evaluación de la Unidad 2.5. |
+| `evaluaciones/unidad_2_5/` | Casos etiquetados, informes de recuperación y registros de latencia y costo. |
 | `ejemplo_academico_mock.py` | Ejemplo académico con datos y respuesta simulados. |
 | `ejemplo_cliente_modulo2.py`, `ejemplo_banco_modulo2.py` y `ejecutar_banco_modulo2.py` | Ejemplos de consulta real mediante el cliente modular. |
 | `pipeline_texto.py` y `metricas_texto.py` | Normalización y métricas léxicas de la Unidad 2.2. |
 | `casos_academicos.py` y `evaluar_unidad_2_2.py` | Veinte casos ficticios, consultas reales y registro reanudable de resultados. |
 | `evaluaciones/unidad_2_2/` | Respuestas, métricas y revisión manual de la Unidad 2.2. |
-| `docs/` | Arquitectura, diseño, verificaciones y límites de cada etapa; los documentos de la Unidad 2.4 se detallan en la guía anterior. |
+| `docs/` | Arquitectura, diseño, verificaciones, límites y capturas de respaldo de cada etapa. |
 | `requirements.txt` | Dependencias del entorno Python. |
 | `orquestacion_academica.py` y `ejemplo_langchain_academico.py` | Flujo académico LCEL de la Unidad 2.3 y demostración local o con Gemini. |
 | `datos_agente_academico.py`, `herramientas_academicas.py` y `agente_academico.py` | Catálogo ficticio, cuatro herramientas y agente de la Unidad 2.4. |
@@ -151,6 +155,9 @@ API de Gemini. El proyecto se verificó con Python 3.14.6. Las dependencias de
    Reemplaza `tu_llave_aqui` por tu clave en `GEMINI_API_KEY`. El modelo
    configurado en la plantilla es `gemini-3.5-flash-lite`. `.env` está excluido
    por `.gitignore` y no debe añadirse al repositorio.
+
+   Para ejecutar RAG con Gemini también se usa esa clave. El índice Chroma no
+   viene en el clon: se crea una vez con el comando `indexar` de la Unidad 2.5.
 
 ## Ejecución
 
@@ -379,10 +386,152 @@ El [documento de límites de autonomía](docs/limites-autonomia-agente.md)
 clasifica las cuatro herramientas como operaciones de solo lectura o cálculo,
 define la revisión de trazas y un procedimiento ante respuestas inesperadas.
 Las herramientas actuales no realizan escrituras ni acciones institucionales.
-El historial se pierde al reiniciar el proceso. El agente aún no incorpora RAG,
-no verifica respuestas contra
+El historial se pierde al reiniciar el proceso. El agente de la Unidad 2.4 no
+invoca automáticamente el RAG de la Unidad 2.5 y no verifica respuestas contra
 fuentes autorizadas y no contabiliza costos mediante el cliente REST del
 Módulo 2. Estos límites están desarrollados en los dos documentos de esta etapa.
+
+### Unidad 2.5: recuperación documental con RAG
+
+El flujo de `rag/` contiene diez documentos Markdown **ficticios** con fuente
+identificable. Usa `gemini-embedding-001` para indexarlos en Chroma y recuperar
+fragmentos por significado. El cliente Gemini genera la respuesta a partir de
+un contexto numerado; el programa comprueba que los números de cita existan.
+El [diseño de la Unidad 2.5](docs/rag-unidad-2-5.md) describe el índice, los
+IDs, las métricas y sus límites. Este RAG funciona como flujo independiente del
+agente de la Unidad 2.4.
+
+| Actividad | Código y evidencia | Qué se comprueba |
+| --- | --- | --- |
+| Chunking | `rag/indice.py`, comando `comparar` | Tamaños 150 y 500, cantidad e integridad de los chunks, sin API. |
+| Embeddings e indexación | `rag/indice.py`, comando `indexar` | Embeddings reales, IDs estables, metadatos de fuente y persistencia en Chroma. |
+| Recuperación y citas | `rag/consulta.py`, comando `consultar` | Búsqueda semántica, contexto numerado, citas y abstención ante información ausente. |
+| Evaluación | [`casos_recuperacion.json`](evaluaciones/unidad_2_5/casos_recuperacion.json), `rag/evaluacion.py` | 22 preguntas etiquetadas antes de consultar; precisión y recall por pregunta. |
+| Latencia y costo | [`registros_latencia_costo.jsonl`](evaluaciones/unidad_2_5/registros_latencia_costo.jsonl) | Tiempos de embedding, búsqueda y generación; tokens y costo estimado de generación. |
+
+#### Comprobación desde un clon limpio
+
+Primero completa la [instalación](#instalación-desde-el-repositorio) y ejecuta
+estos comandos **desde la raíz del repositorio**. Las pruebas y la comparación
+son locales; `indexar`, `consultar` y `evaluar` requieren `GEMINI_API_KEY` en
+`.env`, acceso a la API y consumen cuota.
+
+1. Verifica dependencias y pruebas sin usar la API:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -m pip check
+   .\.venv\Scripts\python.exe -m pytest tests -q
+   .\.venv\Scripts\python.exe -X utf8 -m rag.cli comparar
+   ```
+
+   **Esperado:** `pip check` sin conflictos, 48 pruebas aprobadas y una
+   comparación de 44 chunks con tamaño 150 frente a 10 con tamaño 500. La
+   cantidad de documentos fuente es diez. Las pruebas crean carpetas
+   `.rag-test-*` temporales; no son necesarias para ejecutar la aplicación,
+   se intentan limpiar al finalizar y están ignoradas por Git.
+
+   Para observar la diferencia entre corte fijo y recursivo sobre la primera
+   ficha, ejecuta esta práctica adicional, también sin API:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -c "from rag.indice import cargar_documentos; from langchain_text_splitters import CharacterTextSplitter,RecursiveCharacterTextSplitter; texto=cargar_documentos()[0].page_content; fijo=CharacterTextSplitter(separator='',chunk_size=150,chunk_overlap=0).split_text(texto); rec=RecursiveCharacterTextSplitter(chunk_size=150,chunk_overlap=50).split_text(texto); print('fijo:',[(len(x),x[:45]) for x in fijo]); print('recursivo:',[(len(x),x[:45]) for x in rec])"
+   ```
+
+   El corte fijo puede partir una palabra; el recursivo prioriza separadores
+   naturales. Para inspeccionar un embedding real antes de indexar, con la clave
+   ya configurada, ejecuta:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -c "from rag.indice import crear_embeddings; vector=crear_embeddings().embed_query('tasa de retención'); print('dimensiones:',len(vector)); print('primeros valores:',vector[:5])"
+   ```
+
+   **Esperado:** un vector numérico no vacío. Esta última instrucción sí usa
+   la API de embeddings.
+
+2. Indexa el corpus una sola vez en el equipo donde se hará la demostración:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -m rag.cli indexar
+   ```
+
+   **Esperado:** `documentos: 10`, `chunks: 10` y un manifiesto en
+   `rag/almacen/`. Esa carpeta está ignorada porque se puede reconstruir.
+   Si ya existe, el comando se detiene para evitar duplicados; en ese caso
+   continúa con el paso siguiente.
+
+3. En otro proceso, confirma que se puede recargar el índice persistido:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -c "from rag.indice import cargar_indice; db=cargar_indice(); print('chunks persistidos:',len(db.get(include=[])['ids']))"
+   ```
+
+   **Esperado:** `chunks persistidos: 10`. Si cambia un documento o el modelo
+   de embeddings, la carga detecta que el índice quedó desactualizado y exige
+   reconstruirlo.
+
+4. Prueba una respuesta con fuente y otra sin evidencia suficiente:
+
+   Antes de generar texto, puedes inspeccionar los chunks y el mapa de citas
+   que forman el prompt dinámico. Esta instrucción solo llama a embeddings:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -c "from rag.indice import cargar_indice; from rag.consulta import recuperar,formatear_contexto; docs,_=recuperar(cargar_indice(),'¿Qué significa la tasa de retención?',2); contexto,citas=formatear_contexto(docs); print(contexto); print(citas)"
+   ```
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -m rag.cli consultar "¿Cuánto cambió la aprobación entre 2024 y 2025?" --k 2
+   .\.venv\Scripts\python.exe -X utf8 -m rag.cli consultar "¿Quién es el rector de la institución?" --k 2
+   ```
+
+   **Esperado:** la primera respuesta informa **6 puntos porcentuales** y cita
+   `01_aprobacion.md`; la segunda reconoce que el corpus no permite identificar
+   al rector. En ambas, revisa `revision_citas.invalidas: []` y compara la
+   afirmación con el archivo fuente, por ejemplo `rag/corpus/01_aprobacion.md`.
+   La redacción y el orden de los chunks pueden variar entre ejecuciones.
+
+5. Evalúa el recuperador con las 22 preguntas preparadas:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -m rag.cli evaluar --k 2
+   ```
+
+   **Esperado:** salida con `preguntas: 22`, precisión y recall promedio, y
+   un informe JSON nuevo con fecha en `evaluaciones/unidad_2_5/`. Para observar
+   el efecto de `k`, repite con `--k 1` y `--k 3`. Los casos sin documento
+   relevante tienen recall `null` y se excluyen de su promedio.
+
+6. Registra latencia y costo con la misma pregunta y dos valores de `k`:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -X utf8 -m rag.cli consultar "¿Cuánto cambió la aprobación entre 2024 y 2025?" --k 2
+   .\.venv\Scripts\python.exe -X utf8 -m rag.cli consultar "¿Cuánto cambió la aprobación entre 2024 y 2025?" --k 3
+   Get-Content .\evaluaciones\unidad_2_5\registros_latencia_costo.jsonl -Tail 2 -Encoding UTF8 | ConvertFrom-Json | Select-Object pregunta,k,@{Name='tokens_entrada';Expression={$_.tokens_generacion.entrada}},@{Name='ms_total';Expression={$_.tiempos_ms.total}},usd_generacion_estimado
+   ```
+
+   **Esperado:** dos registros JSONL nuevos; `k=3` incorpora más contexto y
+   normalmente eleva los tokens de entrada. Los tiempos y el costo varían entre
+   ejecuciones. `usd_generacion_estimado` **no incluye embeddings**; ese costo
+   queda como `null` porque esta integración no proporciona su uso de tokens.
+
+En la comprobación manual del 10 de noviembre de 2026 se indexaron y recargaron
+10 chunks. Para las 22 preguntas, recall fue **1,000** con `k=1`, `k=2` y
+`k=3`; la precisión media fue **0,909**, **0,455** y **0,303**, respectivamente.
+Son resultados de este corpus pequeño: cada pregunta respondible tiene un único
+chunk relevante y hay dos preguntas sin respuesta. La revisión numérica de
+citas no demuestra por sí sola que cada afirmación esté respaldada por la fuente.
+
+![Respaldo de cuatro consultas RAG con tokens de entrada, tiempo total y costo estimado de generación](docs/pruebas_RAG.png)
+
+La captura respalda la comparación de cuatro consultas reales; el detalle por
+pregunta queda en los registros JSONL. En esa muestra, la misma pregunta usó
+328 tokens de entrada con `k=2` y 448 con `k=3`.
+
+Para que un docente reproduzca esta sección desde GitHub deben estar **confirmados
+y publicados** el código `rag/`, los diez documentos del corpus, los casos de
+evaluación, los informes que se quieran mostrar, `requirements.txt`, este README
+y `docs/pruebas_RAG.png`. El clon no incluye `.env`, `.venv`, `rag/almacen/` ni
+las carpetas `.rag-test-*`. Esas exclusiones son intencionales: el docente crea
+su entorno, configura su propia clave y genera su índice local.
 
 ## Historial de avances
 

@@ -1,0 +1,340 @@
+{
+  "timestamp_utc": "2026-11-10T11:44:37.554471+00:00",
+  "configuracion": {
+    "k": 1,
+    "tamano_chunk": 500,
+    "solapamiento": 50,
+    "modelo_embedding": "gemini-embedding-001"
+  },
+  "preguntas": 22,
+  "precision_promedio": 0.9090909090909091,
+  "recall_promedio": 1.0,
+  "casos": [
+    {
+      "pregunta": "¿Cuál fue la aprobación en 2024?",
+      "ids_relevantes": [
+        "01_aprobacion.md:0"
+      ],
+      "ids_recuperados": [
+        "01_aprobacion.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 1149.96,
+        "busqueda": 1.71
+      }
+    },
+    {
+      "pregunta": "¿Se incluyen convalidaciones en la tasa de aprobación?",
+      "ids_relevantes": [
+        "01_aprobacion.md:0"
+      ],
+      "ids_recuperados": [
+        "01_aprobacion.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 1206.53,
+        "busqueda": 1.76
+      }
+    },
+    {
+      "pregunta": "¿Qué porcentaje de asistencia hubo en 2025?",
+      "ids_relevantes": [
+        "02_asistencia.md:0"
+      ],
+      "ids_recuperados": [
+        "02_asistencia.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 379.25,
+        "busqueda": 1.42
+      }
+    },
+    {
+      "pregunta": "¿Qué se usa como denominador para la asistencia?",
+      "ids_relevantes": [
+        "02_asistencia.md:0"
+      ],
+      "ids_recuperados": [
+        "02_asistencia.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 694.66,
+        "busqueda": 1.81
+      }
+    },
+    {
+      "pregunta": "¿Cuánto fue la retención en 2024?",
+      "ids_relevantes": [
+        "03_retencion.md:0"
+      ],
+      "ids_recuperados": [
+        "03_retencion.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 376.22,
+        "busqueda": 1.62
+      }
+    },
+    {
+      "pregunta": "¿Qué significa que un estudiante sea retenido?",
+      "ids_relevantes": [
+        "03_retencion.md:0"
+      ],
+      "ids_recuperados": [
+        "03_retencion.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 798.95,
+        "busqueda": 2.11
+      }
+    },
+    {
+      "pregunta": "¿Qué código identifica la fuente de aprobación?",
+      "ids_relevantes": [
+        "04_fuentes.md:0"
+      ],
+      "ids_recuperados": [
+        "04_fuentes.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 403.62,
+        "busqueda": 1.5
+      }
+    },
+    {
+      "pregunta": "¿Las fichas citadas son institucionales y externas?",
+      "ids_relevantes": [
+        "04_fuentes.md:0"
+      ],
+      "ids_recuperados": [
+        "04_fuentes.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 393.38,
+        "busqueda": 1.81
+      }
+    },
+    {
+      "pregunta": "¿En qué unidad se expresa la diferencia entre dos tasas?",
+      "ids_relevantes": [
+        "05_variaciones.md:0"
+      ],
+      "ids_recuperados": [
+        "05_variaciones.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 391.27,
+        "busqueda": 1.87
+      }
+    },
+    {
+      "pregunta": "¿Cómo se obtiene un cambio relativo?",
+      "ids_relevantes": [
+        "05_variaciones.md:0"
+      ],
+      "ids_recuperados": [
+        "05_variaciones.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 741.55,
+        "busqueda": 2.34
+      }
+    },
+    {
+      "pregunta": "¿El cliente reintenta errores de autenticación?",
+      "ids_relevantes": [
+        "06_cliente_gemini.md:0"
+      ],
+      "ids_recuperados": [
+        "06_cliente_gemini.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 399.54,
+        "busqueda": 2.28
+      }
+    },
+    {
+      "pregunta": "¿Dónde debe guardarse la clave de Gemini?",
+      "ids_relevantes": [
+        "06_cliente_gemini.md:0"
+      ],
+      "ids_recuperados": [
+        "06_cliente_gemini.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 410.84,
+        "busqueda": 2.35
+      }
+    },
+    {
+      "pregunta": "¿El costo estimado equivale a una factura?",
+      "ids_relevantes": [
+        "07_costos.md:0"
+      ],
+      "ids_recuperados": [
+        "07_costos.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 390.26,
+        "busqueda": 1.2
+      }
+    },
+    {
+      "pregunta": "¿Se cuentan los tokens de razonamiento al estimar el costo?",
+      "ids_relevantes": [
+        "07_costos.md:0"
+      ],
+      "ids_recuperados": [
+        "07_costos.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 439.26,
+        "busqueda": 1.71
+      }
+    },
+    {
+      "pregunta": "¿Qué herramientas puede usar el agente académico?",
+      "ids_relevantes": [
+        "08_agente.md:0"
+      ],
+      "ids_recuperados": [
+        "08_agente.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 434.15,
+        "busqueda": 1.44
+      }
+    },
+    {
+      "pregunta": "¿La memoria del agente sobrevive al cierre del proceso?",
+      "ids_relevantes": [
+        "08_agente.md:0"
+      ],
+      "ids_recuperados": [
+        "08_agente.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 384.19,
+        "busqueda": 1.85
+      }
+    },
+    {
+      "pregunta": "¿El F1 léxico demuestra exactitud factual?",
+      "ids_relevantes": [
+        "09_evaluacion.md:0"
+      ],
+      "ids_recuperados": [
+        "09_evaluacion.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 866.0,
+        "busqueda": 1.67
+      }
+    },
+    {
+      "pregunta": "¿Qué es recall en recuperación RAG?",
+      "ids_relevantes": [
+        "09_evaluacion.md:0"
+      ],
+      "ids_recuperados": [
+        "09_evaluacion.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 387.48,
+        "busqueda": 3.09
+      }
+    },
+    {
+      "pregunta": "¿Existen cifras institucionales reales en este corpus?",
+      "ids_relevantes": [
+        "10_limites.md:0"
+      ],
+      "ids_recuperados": [
+        "10_limites.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 879.43,
+        "busqueda": 1.99
+      }
+    },
+    {
+      "pregunta": "¿Una cita válida prueba por sí sola que la frase es correcta?",
+      "ids_relevantes": [
+        "10_limites.md:0"
+      ],
+      "ids_recuperados": [
+        "10_limites.md:0"
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "tiempos_ms": {
+        "embedding_consulta": 383.17,
+        "busqueda": 1.48
+      }
+    },
+    {
+      "pregunta": "¿Cuántos estudiantes se titularon en 2023?",
+      "ids_relevantes": [],
+      "ids_recuperados": [
+        "10_limites.md:0"
+      ],
+      "precision": 0.0,
+      "recall": null,
+      "tiempos_ms": {
+        "embedding_consulta": 416.77,
+        "busqueda": 1.42
+      }
+    },
+    {
+      "pregunta": "¿Quién es el rector de la institución?",
+      "ids_relevantes": [],
+      "ids_recuperados": [
+        "10_limites.md:0"
+      ],
+      "precision": 0.0,
+      "recall": null,
+      "tiempos_ms": {
+        "embedding_consulta": 806.92,
+        "busqueda": 1.11
+      }
+    }
+  ]
+}
