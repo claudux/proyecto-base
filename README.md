@@ -588,6 +588,14 @@ el tuning no está disponible mediante la clave de Gemini API o AI Studio; la
 [documentación del SDK](https://googleapis.github.io/python-genai/) lo sitúa en
 Gemini Enterprise Agent Platform.
 
+La Unidad 2.6 quedó publicada en `main` el 20 de noviembre de 2026 con el
+commit `e082cc0`. Incluye ambos datasets, los dos documentos de decisión, la
+dependencia directa `google-genai`, la guía de ejecución y la captura
+`docs/pruebas_tunning.png`. La ejecución local de ambos scripts confirmó 15
+pares válidos y dos pruebas negativas detectadas por caso; la suite existente
+terminó con 48 pruebas aprobadas. Esta evidencia verifica la preparación de
+datos, no la calidad de un modelo afinado.
+
 ## Historial de versiones y avances
 
 Los siguientes hitos proceden de los commits publicados. Desde el cierre
@@ -612,6 +620,7 @@ números de unidad identifican etapas del curso y no son etiquetas de Git:
 | Módulo 2 · Unidad 2.4 | 2026-11-08 | Agente académico con cuatro herramientas, memoria por sesión, trazas de Gemini, pruebas y documentación de autonomía; actualización del README. | `67f855a` |
 | Módulo 2 · Unidad 2.4 | 2026-11-09 | Ajuste del uso de memoria del agente entre sesiones y actualización de su evidencia. | `52f46e7` |
 | Módulo 2 · Unidad 2.5 | 2026-11-16 | RAG con diez documentos ficticios, Chroma persistente, citas, evaluación de 22 preguntas, registro de latencia y costo estimado, pruebas, guía y captura de respaldo. | `d8f860e` |
+| Módulo 2 · Unidad 2.6 | 2026-11-20 | Dos datasets ficticios de 15 pares con balance y validación, dos pruebas negativas por caso, decisiones de personalización fundamentadas y captura de ejecución local. | `e082cc0` |
 
 ## Alcance de los resultados
 
