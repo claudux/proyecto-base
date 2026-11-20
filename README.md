@@ -29,6 +29,8 @@ autorizadas y su verificación automática siguen pendientes.
   memoria por sesión y registre las acciones que ejecutó antes de responder.
 - Indexa un corpus ficticio en Chroma, recupera fragmentos con embeddings de
   Gemini, genera respuestas con citas y evalúa la recuperación.
+- Prepara dos datasets ficticios de la Unidad 2.6, con balance, validación local
+  y dos pruebas negativas por caso, junto con sus decisiones de personalización.
 
 El modelo predeterminado es `gemini-3.5-flash-lite`, según la
 [decisión de arquitectura](docs/decision-arquitectura.md). La variable
@@ -121,6 +123,9 @@ consumo y validación construida en este Gate se conserva para esa evolución.
 | `modelo_agente_simulado.py` y `ejemplo_agente_academico.py` | Demostración del agente sin red o con Gemini, con traza de acciones. |
 | `docs/agente-unidad-2-4.md` y `docs/limites-autonomia-agente.md` | Diseño, evidencia de la sesión 3 y límites de autonomía. |
 | `evaluaciones/unidad_2_4/` | Trazas separadas de la ejecución con Gemini y la demostración simulada. |
+| `ejercicio_propuesto/` | Dataset y decisión del ejercicio didáctico de tickets de la Unidad 2.6. |
+| `dataset_tuning.py` y `decision_personalizacion.md` | Entregables de la Unidad 2.6 aplicados al clasificador académico. |
+| `docs/pruebas_tunning.png` | Captura de la validación local del dataset del proyecto personal. |
 | `.env.example` | Plantilla de configuración sin credenciales reales. |
 
 ## Instalación desde el repositorio
@@ -533,6 +538,55 @@ de evaluación, las dependencias, las pruebas, esta guía y
 las carpetas `.rag-test-*`. Esas exclusiones son intencionales: el docente crea
 su entorno, configura su propia clave y genera su índice local siguiendo los
 pasos anteriores.
+
+### Unidad 2.6: decisión y datasets de personalización
+
+La unidad separa **dos casos ficticios**. El ejercicio didáctico amplía los
+siete tickets de soporte de la actividad a 15 pares repartidos entre cinco
+intenciones. El entregable del proyecto prepara 15 preguntas académicas,
+repartidas entre `indicador`, `definicion` y `sin_datos`. Los pares enseñan un
+formato de salida; no aportan hechos académicos ni sustituyen el RAG documental.
+
+| Caso | Dataset ejecutable | Decisión fundamentada |
+| --- | --- | --- |
+| Ejercicio propuesto | [`ejercicio_propuesto/dataset_tuning.py`](ejercicio_propuesto/dataset_tuning.py) | [`ejercicio_propuesto/decision_personalizacion.md`](ejercicio_propuesto/decision_personalizacion.md) |
+| Proyecto personal | [`dataset_tuning.py`](dataset_tuning.py) | [`decision_personalizacion.md`](decision_personalizacion.md) |
+
+Los dos scripts usan `google-genai`, declarado directamente en
+`requirements.txt`. Para reproducir la validación desde la raíz del repositorio
+en PowerShell, con el entorno instalado:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 ejercicio_propuesto\dataset_tuning.py
+.\.venv\Scripts\python.exe -X utf8 dataset_tuning.py
+```
+
+El **segundo comando** es el respaldo del proyecto personal. La salida debe
+mostrar `Pares válidos: 15`, cinco ejemplos por categoría, `Validación del
+dataset: 0 problemas`, la detección independiente de `clave faltante` y
+`entrada duplicada`, y `Resultado: 15 pares válidos y 2 pruebas rotas
+detectadas.` Una captura de esa terminal, incluyendo el comando y la salida,
+sirve para documentar la ejecución local. Las pruebas rotas se agregan solo a
+copias temporales en memoria; los 15 pares válidos permanecen intactos.
+
+![Ejecución local del dataset académico: 15 pares válidos, balance de cinco por categoría y dos pruebas rotas detectadas](docs/pruebas_tunning.png)
+
+La captura muestra el resultado del proyecto personal: 15 pares válidos,
+balance uniforme entre las tres categorías, cero problemas en el dataset y
+detección de una clave faltante y una entrada duplicada.
+
+La validación es **local, sin clave, red ni costo de API**. No se llama a
+`client.tunings.tune` y no se incorpora un modelo afinado al clasificador actual.
+El contrato actual de la Unidad 2.3 recibe una palabra; el dataset propone
+salida JSON y necesitaría una adaptación antes de integrarse. Quince pares
+demuestran la preparación, pero no bastan para afirmar generalización. En la
+decisión del proyecto, el método del curso da un empate provisional porque
+faltan mediciones de 20 salidas reales del clasificador y un presupuesto de
+entrenamiento documentado. PEFT es un candidato de estudio, no un entrenamiento
+aprobado. Según la [documentación de Gemini API](https://ai.google.dev/gemini-api/docs/model-tuning),
+el tuning no está disponible mediante la clave de Gemini API o AI Studio; la
+[documentación del SDK](https://googleapis.github.io/python-genai/) lo sitúa en
+Gemini Enterprise Agent Platform.
 
 ## Historial de versiones y avances
 

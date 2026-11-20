@@ -1,4 +1,5 @@
 python-dotenv==1.2.4
+google-genai>=2.24,<3
 requests==2.34.2
 pytest>=8,<10
 langchain-core>=1.6,<2
